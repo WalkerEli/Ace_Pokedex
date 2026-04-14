@@ -1,0 +1,120 @@
+@model TeamAceProject.Models.ViewModels.Teams.TeamDetailsViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">@Model.Name</h1>
+        <p class="text-muted mb-1">owner: @Model.Username</p>
+        <span class="badge @(Model.IsPublic ? "text-bg-success" : "text-bg-secondary")">@(Model.IsPublic ? "public" : "private")</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-controller="Posts" asp-action="Create" asp-route-teamId="@Model.Id">create post</a>
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-outline-danger">delete team</button>
+        </form>
+    </div>
+</div>
+
+@if (TempData["TeamSuccess"] != null)
+{
+    <div class="alert alert-success">@TempData["TeamSuccess"]</div>
+}
+@if (TempData["TeamError"] != null)
+{
+    <div class="alert alert-danger">@TempData["TeamError"]</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">current members</h2>
+                @if (Model.Members.Count == 0)
+                {
+                    <p class="text-muted mb-0">No pokemon have been added yet.</p>
+                }
+                else
+                {
+                    <div class="vstack gap-3">
+                        @foreach (var member in Model.Members)
+                        {
+                            <div class="border rounded-4 p-3">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        @if (!string.IsNullOrWhiteSpace(member.PokemonSpriteUrl))
+                                        {
+                                            <img src="@member.PokemonSpriteUrl" alt="@member.PokemonName" class="team-sprite" />
+                                        }
+                                        <div>
+                                            <div class="small text-muted">slot @member.SlotIndex</div>
+                                            <h3 class="h5 mb-2">@member.PokemonName</h3>
+                                            <div><strong>ability:</strong> @(string.IsNullOrWhiteSpace(member.AbilityName) ? "-" : member.AbilityName)</div>
+                                            <div><strong>nature:</strong> @(string.IsNullOrWhiteSpace(member.NatureName) ? "-" : member.NatureName)</div>
+                                            <div><strong>held item:</strong> @(string.IsNullOrWhiteSpace(member.HeldItemName) ? "-" : member.HeldItemName)</div>
+                                            <div><strong>moves:</strong> @(member.Moves.Count == 0 ? "-" : string.Join(", ", member.Moves))</div>
+                                        </div>
+                                    </div>
+                                    <form asp-action="RemoveMember" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="teamId" value="@Model.Id" />
+                                        <input type="hidden" name="teamMemberId" value="@member.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">add pokemon</h2>
+                <form asp-action="AddMember" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="NewMember.TeamId" type="hidden" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="NewMember.SlotIndex" class="form-label">slot</label>
+                        <input asp-for="NewMember.SlotIndex" class="form-control" min="1" max="6" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewMember.PokemonName" class="form-label">pokemon</label>
+                        <input asp-for="NewMember.PokemonName" class="form-control" placeholder="ditto" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewMember.AbilityName" class="form-label">ability</label>
+                        <input asp-for="NewMember.AbilityName" class="form-control" placeholder="limber" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewMember.NatureName" class="form-label">nature</label>
+                        <input asp-for="NewMember.NatureName" class="form-control" placeholder="timid" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewMember.HeldItemName" class="form-label">held item</label>
+                        <input asp-for="NewMember.HeldItemName" class="form-control" placeholder="choice-scarf" />
+                    </div>
+                    <div class="mb-2"><strong>moves</strong></div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><input asp-for="NewMember.Move1" class="form-control" placeholder="move 1" /></div>
+                        <div class="col-6"><input asp-for="NewMember.Move2" class="form-control" placeholder="move 2" /></div>
+                        <div class="col-6"><input asp-for="NewMember.Move3" class="form-control" placeholder="move 3" /></div>
+                        <div class="col-6"><input asp-for="NewMember.Move4" class="form-control" placeholder="move 4" /></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">add to team</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

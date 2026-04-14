@@ -1,0 +1,35 @@
+@model TeamAceProject.Models.ViewModels.Users.UserDetailsViewModel
+@{
+    ViewData["Title"] = Model.Username;
+}
+
+<div class="card shadow-sm rounded-4">
+    <div class="card-body">
+        <h1 class="mb-2">@Model.Username</h1>
+        <p class="text-muted">@Model.Email</p>
+        <div class="row g-3 mb-3">
+            <div class="col-sm-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="small text-muted">favorite pokemon</div>
+                    <div class="fw-semibold">@(string.IsNullOrWhiteSpace(Model.FavoritePokemonName) ? "none" : Model.FavoritePokemonName)</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="small text-muted">teams</div>
+                    <div class="fw-semibold">@Model.TeamCount</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="small text-muted">posts</div>
+                    <div class="fw-semibold">@Model.PostCount</div>
+                </div>
+            </div>
+        </div>
+        @if (Model.FavoritePokemonId.HasValue && !string.IsNullOrWhiteSpace(Model.FavoritePokemonName))
+        {
+            <a class="btn btn-outline-primary" asp-controller="Pokemon" asp-action="Details" asp-route-id="@Model.FavoritePokemonName">view favorite pokemon</a>
+        }
+    </div>
+</div>
