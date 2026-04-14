@@ -1,0 +1,32 @@
+@model TeamAceProject.Models.Entities.Team
+@{
+    ViewData["Title"] = "Create Team";
+}
+
+<h1 class="mb-4">create team</h1>
+
+<div class="card shadow-sm rounded-4">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="UserId" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="team name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsPublic" class="form-check-input" />
+                <label asp-for="IsPublic" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">create</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

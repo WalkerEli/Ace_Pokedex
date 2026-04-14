@@ -1,0 +1,30 @@
+@model List<TeamAceProject.Models.ViewModels.Posts.PostListItemViewModel>
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">posts</h1>
+        <p class="text-muted mb-0">social layer on top of saved teams</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">create post</a>
+</div>
+
+<div class="vstack gap-3">
+    @foreach (var post in Model)
+    {
+        <div class="card shadow-sm rounded-4">
+            <div class="card-body">
+                <div class="small text-muted">@post.Username · @post.CreatedAt.ToLocalTime().ToString("g")</div>
+                <h2 class="h5 mt-2 mb-1">@post.TeamName</h2>
+                <p class="mb-3">@post.Caption</p>
+                <div class="d-flex gap-3 align-items-center">
+                    <span>👍 @post.LikeCount</span>
+                    <span>👎 @post.DislikeCount</span>
+                    <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@post.Id">open</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
