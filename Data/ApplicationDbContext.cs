@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 
-namespace TeamAceProject.Data
+namespace TeamAceProject.Services
 {
     // EF Core database context — registers all entity sets and configures relationships
     public class ApplicationDbContext : DbContext

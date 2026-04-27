@@ -63,7 +63,13 @@
                                         }
                                         <div>
                                             <div class="small text-muted">slot @member.SlotIndex</div>
-                                            <h3 class="h5 mb-2">@member.PokemonName</h3>
+                                            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                                                <h3 class="h5 mb-0">@member.PokemonName</h3>
+                                                @foreach (var type in member.Types)
+                                                {
+                                                    <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                                                }
+                                            </div>
                                             <div><strong>ability:</strong> @(string.IsNullOrWhiteSpace(member.AbilityName) ? "-" : member.AbilityName)</div>
                                             <div><strong>nature:</strong> @(string.IsNullOrWhiteSpace(member.NatureName) ? "-" : member.NatureName)</div>
                                             <div><strong>held item:</strong> @(string.IsNullOrWhiteSpace(member.HeldItemName) ? "-" : member.HeldItemName)</div>

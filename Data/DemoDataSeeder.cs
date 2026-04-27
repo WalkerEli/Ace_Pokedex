@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using TeamAceProject.Models.Entities;
+using TeamAceProject.Services;
 
 namespace TeamAceProject.Data
 {

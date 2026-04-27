@@ -21,6 +21,9 @@ public class TeamMember
     public string? PokemonSpriteUrl { get; set; }
 
     [StringLength(100)]
+    public string? PokemonTypes { get; set; }
+
+    [StringLength(100)]
     public string? AbilityName { get; set; }
 
     [StringLength(100)]

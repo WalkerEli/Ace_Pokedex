@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TeamAceProject.Data;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.Enums;
 using TeamAceProject.Models.ViewModels.Posts;

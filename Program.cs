@@ -21,12 +21,8 @@ builder
         options.AccessDeniedPath = "/Account/Login";
     });
 
-string dataDirectory = Path.Combine(builder.Environment.ContentRootPath, "Data");
-Directory.CreateDirectory(dataDirectory);
-string databasePath = Path.Combine(dataDirectory, "teamace.db");
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite($"Data Source={databasePath}")
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 builder.Services.AddScoped<ITeamService, TeamService>();
@@ -62,6 +58,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapControllers();
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 

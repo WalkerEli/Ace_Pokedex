@@ -8,6 +8,7 @@ namespace TeamAceProject.Models.Dtos.PokeApi
         public List<PokemonStatDto> Stats { get; set; } = new List<PokemonStatDto>();
         public List<PokemonAbilityEntryDto> Abilities { get; set; } = new List<PokemonAbilityEntryDto>();
         public List<PokemonMoveEntryDto> Moves { get; set; } = new List<PokemonMoveEntryDto>();
+        public List<PokemonTypeEntryDto> Types { get; set; } = new List<PokemonTypeEntryDto>();
     }
 
     public class PokemonSpritesDto
@@ -29,5 +30,10 @@ namespace TeamAceProject.Models.Dtos.PokeApi
     public class PokemonMoveEntryDto
     {
         public NamedApiResourceDto Move { get; set; } = new NamedApiResourceDto();
+    }
+
+    public class PokemonTypeEntryDto
+    {
+        public NamedApiResourceDto Type { get; set; } = new NamedApiResourceDto();
     }
 }

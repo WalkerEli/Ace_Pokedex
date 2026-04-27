@@ -1,11 +1,15 @@
 'use strict';
 
-import { getAntiForgeryToken, ajaxPost, showToast } from './myjs.js';
+import { getAntiForgeryToken, showToast } from './myjs.js';
 
-// ── Post Repository ──────────────────────────────────────────────────────────
+// Post Repository
 // Handles all AJAX calls to the /api/posts JSON endpoint
-class PostRepository {
-    #baseAddress = '/api/posts';
+export class PostRepository {
+    #baseAddress;
+
+    constructor(baseAddress) {
+        this.#baseAddress = baseAddress;
+    }
 
     // Sends a like or dislike reaction for a post
     async react(postId, type) {
@@ -13,7 +17,13 @@ class PostRepository {
         fd.append('postId', postId);
         fd.append('type', type);
         fd.append('__RequestVerificationToken', getAntiForgeryToken());
-        return ajaxPost(`${this.#baseAddress}/react`, fd);
+        const response = await fetch(`${this.#baseAddress}/react`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        if (!response.ok) throw new Error(await response.text());
+        return await response.json();
     }
 
     // Submits a new comment on a post and returns the saved comment data
@@ -22,30 +32,47 @@ class PostRepository {
         fd.append('postId', postId);
         fd.append('body', body);
         fd.append('__RequestVerificationToken', getAntiForgeryToken());
-        return ajaxPost(`${this.#baseAddress}/add-comment`, fd);
+        const response = await fetch(`${this.#baseAddress}/add-comment`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        if (!response.ok) throw new Error(await response.text());
+        return await response.json();
     }
 
     // Deletes a comment by its ID
     async deleteComment(id) {
-        const fd = new FormData();
-        fd.append('id', id);
-        fd.append('__RequestVerificationToken', getAntiForgeryToken());
-        return ajaxPost(`${this.#baseAddress}/delete-comment`, fd);
+        const token = getAntiForgeryToken();
+        const response = await fetch(`${this.#baseAddress}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'RequestVerificationToken': token,
+            },
+        });
+        if (!response.ok) throw new Error(await response.text());
+        return await response.json();
     }
 
     // Updates the body text of an existing comment
     async editComment(id, body) {
         const fd = new FormData();
-        fd.append('id', id);
         fd.append('body', body);
         fd.append('__RequestVerificationToken', getAntiForgeryToken());
-        return ajaxPost(`${this.#baseAddress}/edit-comment`, fd);
+        const response = await fetch(`${this.#baseAddress}/${id}`, {
+            method: 'PUT',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd,
+        });
+        if (!response.ok) throw new Error(await response.text());
+        return await response.json();
     }
 }
 
-const repo = new PostRepository();
+const repo = new PostRepository('/api/PostsApi');
 
-// ── Posts Index ──────────────────────────────────────────────────────────────
+// Posts Index 
 document.querySelectorAll('.btn-react').forEach(function (btn) {
     btn.addEventListener('click', async function () {
         const card = this.closest('[data-post]');
@@ -59,7 +86,7 @@ document.querySelectorAll('.btn-react').forEach(function (btn) {
     });
 });
 
-// ── Posts Details ─────────────────────────────────────────────────────────────
+// Posts Details 
 const likeBtn    = document.getElementById('btn-like');
 const dislikeBtn = document.getElementById('btn-dislike');
 
@@ -162,7 +189,7 @@ if (commentForm) {
     });
 }
 
-// ── Posts Create ──────────────────────────────────────────────────────────────
+// Posts Create 
 // Fetches the current user's teams and populates the team dropdown on create/edit forms
 (async function () {
     const select = document.getElementById('team-select');

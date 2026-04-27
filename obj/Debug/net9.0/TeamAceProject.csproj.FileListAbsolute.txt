@@ -145,7 +145,6 @@ C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Deb
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\scopedcss\bundle\TeamAceProject.styles.css
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\scopedcss\projectbundle\TeamAceProject.bundle.scp.css
-C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\o2cwjgnzdf-f8mp18omc5.gz
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\g4gl694ouz-61n19gt1b8.gz
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\63i2uv9tu5-xtxxf3hu2r.gz
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\gg7ph8a50y-t1cqhe9u97.gz
@@ -221,6 +220,7 @@ C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Deb
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\TeamAceProject.genruntimeconfig.cache
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\ref\TeamAceProject.dll
 C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\tlusku6qjy-f5o8ebcz1h.gz
-C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\jjrif665gx-jtvubnl59r.gz
-C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\kbt94qtglq-rfhakv9k30.gz
-C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\fx3vrqlohh-je7zvrj0ir.gz
+C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\jjrif665gx-kbwssdxzca.gz
+C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\kbt94qtglq-htezw2nig8.gz
+C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\fx3vrqlohh-onjmt30px2.gz
+C:\Users\Camde\OneDrive\Documents\CSCI 3110 Advanced Web Dev\Ace_Pokedex\obj\Debug\net9.0\compressed\o2cwjgnzdf-572j0a92f0.gz

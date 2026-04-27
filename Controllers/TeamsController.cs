@@ -8,8 +8,15 @@ using TeamAceProject.Services.Interfaces;
 namespace TeamAceProject.Controllers
 {
     // Manages team creation, member editing, and deletion
-    public class TeamsController(ITeamService teamService) : Controller
+    public class TeamsController : Controller
     {
+        private readonly ITeamService _teamService;
+
+        public TeamsController(ITeamService teamService)
+        {
+            _teamService = teamService;
+        }
+
 
         // Returns the current user's teams as JSON for the team dropdown in post forms
         [Authorize]
@@ -20,7 +27,7 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return Json(new List<object>());
 
-            var teams = await teamService.GetUserTeamOptionsAsync(currentUserId.Value);
+            var teams = await _teamService.GetUserTeamOptionsAsync(currentUserId.Value);
             return Json(teams);
         }
 
@@ -30,8 +37,8 @@ namespace TeamAceProject.Controllers
         {
             Guid? currentUserId = User.GetCurrentUserId();
             var teams = currentUserId.HasValue
-                ? await teamService.GetTeamsByUserAsync(currentUserId.Value)
-                : await teamService.GetAllTeamsAsync();
+                ? await _teamService.GetTeamsByUserAsync(currentUserId.Value)
+                : await _teamService.GetAllTeamsAsync();
             return View(teams);
         }
 
@@ -39,7 +46,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var team = await teamService.GetTeamByIdAsync(id);
+            var team = await _teamService.GetTeamByIdAsync(id);
 
             if (team == null)
             {
@@ -84,7 +91,7 @@ namespace TeamAceProject.Controllers
             if (!ModelState.IsValid)
                 return View(team);
 
-            Team createdTeam = await teamService.CreateTeamAsync(team);
+            Team createdTeam = await _teamService.CreateTeamAsync(team);
             return RedirectToAction(nameof(Details), new { id = createdTeam.Id });
         }
 
@@ -98,7 +105,7 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var team = await teamService.GetTeamOwnerIdAsync(input.TeamId);
+            var team = await _teamService.GetTeamOwnerIdAsync(input.TeamId);
             if (team == null || team != currentUserId.Value)
                 return Forbid();
 
@@ -110,7 +117,7 @@ namespace TeamAceProject.Controllers
 
             try
             {
-                await teamService.AddTeamMemberAsync(input);
+                await _teamService.AddTeamMemberAsync(input);
                 TempData["TeamSuccess"] = "Pokemon added to the team.";
             }
             catch (Exception ex)
@@ -131,7 +138,7 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var ownerId = await teamService.GetTeamOwnerIdAsync(input.TeamId);
+            var ownerId = await _teamService.GetTeamOwnerIdAsync(input.TeamId);
             if (ownerId == null || ownerId != currentUserId.Value)
                 return Forbid();
 
@@ -143,7 +150,7 @@ namespace TeamAceProject.Controllers
 
             try
             {
-                await teamService.EditTeamMemberAsync(input);
+                await _teamService.EditTeamMemberAsync(input);
                 TempData["TeamSuccess"] = "Pokemon updated.";
             }
             catch (Exception ex)
@@ -164,11 +171,11 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var ownerId = await teamService.GetTeamOwnerIdAsync(teamId);
+            var ownerId = await _teamService.GetTeamOwnerIdAsync(teamId);
             if (ownerId == null || ownerId != currentUserId.Value)
                 return Forbid();
 
-            bool removed = await teamService.RemoveTeamMemberAsync(teamMemberId);
+            bool removed = await _teamService.RemoveTeamMemberAsync(teamMemberId);
 
             TempData[removed ? "TeamSuccess" : "TeamError"] =
                 removed ? "Pokemon removed from the team." : "That team member could not be removed.";
@@ -176,21 +183,31 @@ namespace TeamAceProject.Controllers
             return RedirectToAction(nameof(Details), new { id = teamId });
         }
 
+        // Shows a confirmation page before deleting the team
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var team = await _teamService.GetTeamByIdAsync(id);
+            if (team == null) return NotFound();
+            return View(team);
+        }
+
         // Deletes the team and all its members after confirming ownership
         [Authorize]
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var ownerId = await teamService.GetTeamOwnerIdAsync(id);
+            var ownerId = await _teamService.GetTeamOwnerIdAsync(id);
             if (ownerId == null || ownerId != currentUserId.Value)
                 return Forbid();
 
-            bool deleted = await teamService.DeleteTeamAsync(id);
+            bool deleted = await _teamService.DeleteTeamAsync(id);
 
             if (!deleted)
                 return NotFound();

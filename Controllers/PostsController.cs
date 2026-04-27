@@ -130,11 +130,21 @@ namespace TeamAceProject.Controllers
             return RedirectToAction(nameof(Details), new { id = input.Id });
         }
 
+        // Shows a confirmation page before deleting the post
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var post = await _postService.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+            return View(post);
+        }
+
         // Deletes the post after verifying the requester is the owner
         [Authorize]
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
@@ -147,6 +157,5 @@ namespace TeamAceProject.Controllers
             await _postService.DeletePostAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
