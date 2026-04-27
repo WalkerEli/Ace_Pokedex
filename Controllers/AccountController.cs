@@ -8,6 +8,7 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers;
 
+// Handles user registration, login, and logout using cookie authentication
 public class AccountController : Controller
 {
     private readonly IUserService _userService;
@@ -17,6 +18,7 @@ public class AccountController : Controller
         _userService = userService;
     }
 
+    // Shows the registration form, redirects home if already logged in
     [HttpGet]
     public IActionResult Register()
     {
@@ -28,6 +30,7 @@ public class AccountController : Controller
         return View(new RegisterInputModel());
     }
 
+    // Creates a new account, signs the user in, and redirects to their profile
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterInputModel input)
@@ -48,6 +51,7 @@ public class AccountController : Controller
         return RedirectToAction("Details", "Users", new { id = user.Id });
     }
 
+    // Shows the login form, redirects home if already logged in
     [HttpGet]
     public IActionResult Login()
     {
@@ -59,9 +63,10 @@ public class AccountController : Controller
         return View(new LoginInputModel());
     }
 
+    // Authenticates the user and sets a persistent 7-day auth cookie
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginInputModel input)
+    public async Task<IActionResult> Login(LoginInputModel input, string? returnUrl = null)
     {
         if (!ModelState.IsValid)
         {
@@ -76,9 +81,14 @@ public class AccountController : Controller
         }
 
         await SignInUserAsync(user);
+
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return Redirect(returnUrl);
+
         return RedirectToAction("Details", "Users", new { id = user.Id });
     }
 
+    // Clears the auth cookie and redirects to the home page
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
@@ -87,6 +97,7 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    // Builds the claims principal from the user record and writes the auth cookie
     private async Task SignInUserAsync(User user)
     {
         List<Claim> claims = new List<Claim>

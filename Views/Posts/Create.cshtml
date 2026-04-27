@@ -9,17 +9,25 @@
     <div class="card-body">
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
-            <input asp-for="UserId" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" id="validation-summary"></div>
 
             <div class="mb-3">
-                <label asp-for="TeamId" class="form-label">team id</label>
-                <input asp-for="TeamId" class="form-control" />
+                <label class="form-label">team</label>
+                <select id="team-select" name="TeamId" class="form-select" required data-preselected="@Model.TeamId">
+                    <option value="">loading your teams...</option>
+                </select>
+                <span asp-validation-for="TeamId" class="text-danger small"></span>
             </div>
+
             <div class="mb-3">
                 <label asp-for="Caption" class="form-label"></label>
-                <textarea asp-for="Caption" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Caption" class="text-danger"></span>
+                <textarea asp-for="Caption" class="form-control" rows="4"
+                          placeholder="share your team strategy..."
+                          data-maxlength="1000"></textarea>
+                <span asp-validation-for="Caption" class="text-danger small"></span>
             </div>
+
             <button type="submit" class="btn btn-primary">publish</button>
         </form>
     </div>
@@ -27,4 +35,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+<script defer type="module" src="~/js/post.js"></script>
 }

@@ -11,5 +11,6 @@ namespace TeamAceProject.Services.Interfaces
         Task<User?> RegisterUserAsync(RegisterInputModel input);
         Task<User?> AuthenticateUserAsync(string usernameOrEmail, string password);
         Task<bool> SetFavoritePokemonAsync(Guid userId, int pokemonId, string pokemonName);
+        Task<bool> SetBioAsync(Guid userId, string bio);
     }
 }

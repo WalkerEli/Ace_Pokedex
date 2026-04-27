@@ -3,6 +3,7 @@ using TeamAceProject.Models.Entities;
 
 namespace TeamAceProject.Data
 {
+    // EF Core database context — registers all entity sets and configures relationships
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -16,6 +17,7 @@ namespace TeamAceProject.Data
         public DbSet<Comment> Comments { get; set; } = null!;
         public DbSet<Reaction> Reactions { get; set; } = null!;
 
+        // Defines keys, column constraints, indexes, and cascade rules for all entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,6 +29,7 @@ namespace TeamAceProject.Data
             modelBuilder.Entity<User>().Property(user => user.Email).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<User>().Property(user => user.PasswordHash).IsRequired();
             modelBuilder.Entity<User>().Property(user => user.FavoritePokemonName).HasMaxLength(100);
+            modelBuilder.Entity<User>().Property(user => user.Bio).HasMaxLength(500);
 
             modelBuilder.Entity<Team>().HasKey(team => team.Id);
             modelBuilder.Entity<Team>().Property(team => team.Name).IsRequired().HasMaxLength(100);

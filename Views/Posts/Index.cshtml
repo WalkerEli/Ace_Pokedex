@@ -1,8 +1,10 @@
 @model List<TeamAceProject.Models.ViewModels.Posts.PostListItemViewModel>
+@using TeamAceProject.Models.Enums
 @{
     ViewData["Title"] = "Posts";
 }
 
+@Html.AntiForgeryToken()
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="mb-1">posts</h1>
@@ -12,19 +14,63 @@
 </div>
 
 <div class="vstack gap-3">
+    @if (!Model.Any())
+    {
+        <p class="text-muted">no posts yet — be the first!</p>
+    }
     @foreach (var post in Model)
     {
-        <div class="card shadow-sm rounded-4">
+        <div class="card shadow-sm rounded-4" data-post="@post.Id">
             <div class="card-body">
-                <div class="small text-muted">@post.Username · @post.CreatedAt.ToLocalTime().ToString("g")</div>
-                <h2 class="h5 mt-2 mb-1">@post.TeamName</h2>
-                <p class="mb-3">@post.Caption</p>
-                <div class="d-flex gap-3 align-items-center">
-                    <span>👍 @post.LikeCount</span>
-                    <span>👎 @post.DislikeCount</span>
+                <div class="small text-muted">
+                    <a class="text-muted text-decoration-none fw-semibold"
+                       asp-controller="Users" asp-action="Details" asp-route-id="@post.UserId">@post.Username</a>
+                    · @post.CreatedAt.ToLocalTime().ToString("g")
+                </div>
+                <h2 class="h5 mt-2 mb-1">
+                    <a class="text-decoration-none" asp-controller="Teams" asp-action="Details" asp-route-id="@post.TeamId">@post.TeamName</a>
+                </h2>
+
+                @if (post.MemberSpriteUrls.Count > 0)
+                {
+                    <div class="d-flex flex-wrap gap-1 mb-2">
+                        @foreach (var sprite in post.MemberSpriteUrls)
+                        {
+                            <img src="@sprite" alt="pokemon" style="width:48px;height:48px;image-rendering:pixelated;" />
+                        }
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(post.Caption))
+                {
+                    <p class="mb-3">@post.Caption</p>
+                }
+
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <button class="btn btn-outline-success btn-sm btn-react"
+                                data-post-id="@post.Id" data-type="@((int)ReactionType.Like)">
+                            👍 <span class="like-count">@post.LikeCount</span>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm btn-react"
+                                data-post-id="@post.Id" data-type="@((int)ReactionType.Dislike)">
+                            👎 <span class="dislike-count">@post.DislikeCount</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <span class="text-muted small">👍 @post.LikeCount</span>
+                        <span class="text-muted small">👎 @post.DislikeCount</span>
+                    }
+                    <span class="text-muted small">💬 @post.CommentCount</span>
                     <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@post.Id">open</a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+@section Scripts {
+<script defer type="module" src="~/js/post.js"></script>
+}

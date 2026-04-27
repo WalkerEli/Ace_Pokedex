@@ -1,6 +1,9 @@
 @model TeamAceProject.Models.ViewModels.Users.UserDetailsViewModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = Model.Username;
+    Guid? currentUserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var _uid) ? _uid : (Guid?)null;
+    bool isOwner = currentUserId.HasValue && currentUserId.Value == Model.Id;
 }
 
 <div class="card shadow-sm rounded-4">
@@ -10,10 +13,18 @@
 
         <div class="row g-3 mb-3">
             <div class="col-sm-4">
-                <div class="border rounded-4 p-3 h-100">
-                    <div class="small text-muted">favorite pokemon</div>
-                    <div class="fw-semibold">
-                        @(string.IsNullOrWhiteSpace(Model.FavoritePokemonName) ? "none" : Model.FavoritePokemonName)
+                <div class="border rounded-4 p-3 h-100 d-flex align-items-center gap-3">
+                    @if (Model.FavoritePokemonId.HasValue)
+                    {
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/@(Model.FavoritePokemonId).gif"
+                             alt="@Model.FavoritePokemonName"
+                             style="width:64px;height:64px;image-rendering:pixelated;flex-shrink:0;" />
+                    }
+                    <div>
+                        <div class="small text-muted">favorite pokemon</div>
+                        <div class="fw-semibold">
+                            @(string.IsNullOrWhiteSpace(Model.FavoritePokemonName) ? "none" : Model.FavoritePokemonName)
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,7 +56,26 @@
 
         <hr />
 
-        <h4 class="mb-3">your teams</h4>
+        @if (isOwner)
+        {
+            <h5 class="mb-2">about me</h5>
+            <form asp-controller="Users" asp-action="SetBio" method="post" class="mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="userId" value="@Model.Id" />
+                <textarea name="bio" class="form-control mb-2" rows="3"
+                          placeholder="write something about yourself..."
+                          maxlength="500">@Model.Bio</textarea>
+                <button type="submit" class="btn btn-primary btn-sm">save bio</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.Bio))
+        {
+            <h5 class="mb-2">about</h5>
+            <p class="mb-3">@Model.Bio</p>
+            <hr />
+        }
+
+        <h4 class="mb-3">@Model.Username's teams</h4>
 
         @if (Model.Teams != null && Model.Teams.Any())
         {

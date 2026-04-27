@@ -1,6 +1,9 @@
 @model TeamAceProject.Models.ViewModels.Teams.TeamDetailsViewModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = Model.Name;
+    Guid? currentUserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var _uid) ? _uid : (Guid?)null;
+    bool isOwner = currentUserId.HasValue && currentUserId.Value == Model.UserId;
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
@@ -10,12 +13,20 @@
         <span class="badge @(Model.IsPublic ? "text-bg-success" : "text-bg-secondary")">@(Model.IsPublic ? "public" : "private")</span>
     </div>
     <div class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" asp-controller="Posts" asp-action="Create" asp-route-teamId="@Model.Id">create post</a>
-        <form asp-action="Delete" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-outline-danger">delete team</button>
-        </form>
+        @if (isOwner)
+        {
+            <a class="btn btn-outline-secondary" asp-controller="Posts" asp-action="Create" asp-route-teamId="@Model.Id">create post</a>
+        }
+        <div id="share-target" class="d-flex gap-2"></div>
+        @if (isOwner)
+        {
+            <form asp-action="Delete" method="post"
+                  data-confirm="Delete this team and all its members? This cannot be undone.">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-danger">delete team</button>
+            </form>
+        }
     </div>
 </div>
 
@@ -42,6 +53,7 @@
                     <div class="vstack gap-3">
                         @foreach (var member in Model.Members)
                         {
+                            var apiName = member.PokemonName.ToLowerInvariant().Replace(" ", "-");
                             <div class="border rounded-4 p-3">
                                 <div class="d-flex justify-content-between align-items-start gap-3">
                                     <div class="d-flex gap-3 align-items-center">
@@ -58,13 +70,76 @@
                                             <div><strong>moves:</strong> @(member.Moves.Count == 0 ? "-" : string.Join(", ", member.Moves))</div>
                                         </div>
                                     </div>
-                                    <form asp-action="RemoveMember" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="teamId" value="@Model.Id" />
-                                        <input type="hidden" name="teamMemberId" value="@member.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">remove</button>
-                                    </form>
+                                    @if (isOwner)
+                                    {
+                                        <div class="d-flex gap-1">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-member"
+                                                    data-member-id="@member.Id"
+                                                    data-api-name="@apiName"
+                                                    data-ability="@(member.AbilityName ?? "")">
+                                                edit
+                                            </button>
+                                            <form asp-action="RemoveMember" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="teamId" value="@Model.Id" />
+                                                <input type="hidden" name="teamMemberId" value="@member.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">remove</button>
+                                            </form>
+                                        </div>
+                                    }
                                 </div>
+                                @if (isOwner)
+                                {
+                                    <div class="edit-member-panel d-none mt-3 pt-3 border-top" id="edit-panel-@member.Id">
+                                        <form asp-action="EditMember" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="TeamMemberId" value="@member.Id" />
+                                            <input type="hidden" name="TeamId" value="@Model.Id" />
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-md-6">
+                                                    <label class="form-label small fw-semibold">pokemon</label>
+                                                    <input type="text" name="PokemonName" class="form-control form-control-sm edit-pokemon-input"
+                                                           value="@member.PokemonName" autocomplete="off" list="pokemon-datalist" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label small fw-semibold">ability</label>
+                                                    <select name="AbilityName" class="form-select form-select-sm edit-ability-select">
+                                                        <option value="">-- loading --</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label small fw-semibold">nature</label>
+                                                    <input type="text" name="NatureName" class="form-control form-control-sm"
+                                                           value="@member.NatureName" autocomplete="off" list="nature-datalist" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label small fw-semibold">held item</label>
+                                                    <input type="text" name="HeldItemName" class="form-control form-control-sm"
+                                                           value="@member.HeldItemName" autocomplete="off" list="held-item-datalist" />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-semibold">moves</label>
+                                                <div class="row g-1">
+                                                    @for (int i = 1; i <= 4; i++)
+                                                    {
+                                                        <div class="col-6">
+                                                            <input type="text" name="Move@(i)" class="form-control form-control-sm edit-move-input"
+                                                                   value="@(member.Moves.Count >= i ? member.Moves[i - 1] : "")"
+                                                                   autocomplete="off" list="edit-moves-@member.Id"
+                                                                   placeholder="move @i" disabled />
+                                                        </div>
+                                                    }
+                                                    <datalist id="edit-moves-@member.Id"></datalist>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-primary btn-sm">save changes</button>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm btn-cancel-edit-member">cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
@@ -73,6 +148,8 @@
         </div>
     </div>
 
+    @if (isOwner)
+    {
     <div class="col-lg-5">
         <div class="card shadow-sm rounded-4">
             <div class="card-body">
@@ -83,9 +160,10 @@
 
                     <div class="mb-3">
                         <label class="form-label">pokemon</label>
-                        <select name="PokemonName" id="pokemon-select" class="form-select">
-                            <option value="">loading pokemon...</option>
-                        </select>
+                        <input type="text" name="PokemonName" id="pokemon-input"
+                               class="form-control" placeholder="loading pokemon..."
+                               autocomplete="off" list="pokemon-datalist" />
+                        <datalist id="pokemon-datalist"></datalist>
                     </div>
 
                     <div class="mb-3">
@@ -97,8 +175,10 @@
 
                     <div class="mb-3">
                         <label class="form-label">nature</label>
-                        <select name="NatureName" class="form-select">
-                            <option value="">-- none --</option>
+                        <input type="text" name="NatureName" class="form-control"
+                               placeholder="type to search nature..." autocomplete="off"
+                               list="nature-datalist" />
+                        <datalist id="nature-datalist">
                             <option>Hardy</option><option>Lonely</option><option>Brave</option>
                             <option>Adamant</option><option>Naughty</option><option>Bold</option>
                             <option>Docile</option><option>Relaxed</option><option>Impish</option>
@@ -108,37 +188,42 @@
                             <option>Bashful</option><option>Rash</option><option>Calm</option>
                             <option>Gentle</option><option>Sassy</option><option>Careful</option>
                             <option>Quirky</option>
-                        </select>
+                        </datalist>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">held item</label>
-                        <select name="HeldItemName" id="held-item-select" class="form-select">
-                            <option value="">-- none --</option>
-                        </select>
+                        <input type="text" name="HeldItemName" id="held-item-input"
+                               class="form-control" placeholder="loading items..."
+                               autocomplete="off" list="held-item-datalist" />
+                        <datalist id="held-item-datalist"></datalist>
                     </div>
 
                     <div class="mb-2"><strong>moves</strong></div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
-                            <select name="Move1" id="move-1" class="form-select">
-                                <option value="">-- select a pokemon first --</option>
-                            </select>
+                            <input type="text" name="Move1" id="move-input-1" class="form-control"
+                                   placeholder="select a pokemon first" autocomplete="off"
+                                   list="move-datalist-1" disabled />
+                            <datalist id="move-datalist-1"></datalist>
                         </div>
                         <div class="col-6">
-                            <select name="Move2" id="move-2" class="form-select">
-                                <option value="">-- select a pokemon first --</option>
-                            </select>
+                            <input type="text" name="Move2" id="move-input-2" class="form-control"
+                                   placeholder="select a pokemon first" autocomplete="off"
+                                   list="move-datalist-2" disabled />
+                            <datalist id="move-datalist-2"></datalist>
                         </div>
                         <div class="col-6">
-                            <select name="Move3" id="move-3" class="form-select">
-                                <option value="">-- select a pokemon first --</option>
-                            </select>
+                            <input type="text" name="Move3" id="move-input-3" class="form-control"
+                                   placeholder="select a pokemon first" autocomplete="off"
+                                   list="move-datalist-3" disabled />
+                            <datalist id="move-datalist-3"></datalist>
                         </div>
                         <div class="col-6">
-                            <select name="Move4" id="move-4" class="form-select">
-                                <option value="">-- select a pokemon first --</option>
-                            </select>
+                            <input type="text" name="Move4" id="move-input-4" class="form-control"
+                                   placeholder="select a pokemon first" autocomplete="off"
+                                   list="move-datalist-4" disabled />
+                            <datalist id="move-datalist-4"></datalist>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">add to team</button>
@@ -146,92 +231,9 @@
             </div>
         </div>
     </div>
+    }
 </div>
 
 @section Scripts {
-<script>
-(async function () {
-    const pokemonSelect  = document.getElementById('pokemon-select');
-    const abilitySelect  = document.getElementById('ability-select');
-    const heldItemSelect = document.getElementById('held-item-select');
-    const moveSelects    = [1, 2, 3, 4].map(n => document.getElementById(`move-${n}`));
-
-    function toDisplay(apiName) {
-        return apiName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    }
-
-    function populateSelect(select, names, placeholder) {
-        select.innerHTML = '';
-        const blank = document.createElement('option');
-        blank.value = '';
-        blank.textContent = placeholder;
-        select.appendChild(blank);
-        names.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            select.appendChild(opt);
-        });
-    }
-
-    // Fetch pokemon list and items list in parallel
-    const [pokemonRes, itemsRes] = await Promise.allSettled([
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=1302'),
-        fetch('https://pokeapi.co/api/v2/item?limit=2500')
-    ]);
-
-    if (pokemonRes.status === 'fulfilled' && pokemonRes.value.ok) {
-        const data = await pokemonRes.value.json();
-        populateSelect(pokemonSelect, data.results.map(p => toDisplay(p.name)), '-- select pokemon --');
-    } else {
-        pokemonSelect.innerHTML = '<option value="">could not load pokemon</option>';
-    }
-
-    if (itemsRes.status === 'fulfilled' && itemsRes.value.ok) {
-        const data = await itemsRes.value.json();
-        data.results.forEach(i => {
-            const opt = document.createElement('option');
-            opt.value = toDisplay(i.name);
-            opt.textContent = toDisplay(i.name);
-            heldItemSelect.appendChild(opt);
-        });
-    }
-
-    // When a pokemon is selected, fetch its abilities + moves
-    pokemonSelect.addEventListener('change', async function () {
-        const normalized = this.value.trim().toLowerCase().replace(/\s+/g, '-');
-        if (!normalized) {
-            abilitySelect.innerHTML = '<option value="">-- select a pokemon first --</option>';
-            moveSelects.forEach(s => { s.innerHTML = '<option value="">-- select a pokemon first --</option>'; });
-            return;
-        }
-        try {
-            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${normalized}`);
-            if (!res.ok) return;
-            const pokemon = await res.json();
-
-            abilitySelect.innerHTML = '<option value="">-- select ability --</option>';
-            pokemon.abilities.forEach(a => {
-                const opt = document.createElement('option');
-                opt.value = toDisplay(a.ability.name);
-                opt.textContent = toDisplay(a.ability.name);
-                abilitySelect.appendChild(opt);
-            });
-
-            const moveOptions = pokemon.moves.map(m => {
-                const opt = document.createElement('option');
-                opt.value = toDisplay(m.move.name);
-                opt.textContent = toDisplay(m.move.name);
-                return opt;
-            });
-            moveSelects.forEach(select => {
-                select.innerHTML = '<option value="">-- none --</option>';
-                moveOptions.forEach(opt => select.appendChild(opt.cloneNode(true)));
-            });
-        } catch {
-            // silently ignore network errors
-        }
-    });
-})();
-</script>
+<script defer type="module" src="~/js/teamDetails.js"></script>
 }

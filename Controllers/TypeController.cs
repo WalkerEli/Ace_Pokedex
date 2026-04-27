@@ -3,8 +3,10 @@ using TeamAceProject.Models.ViewModels.Type;
 
 namespace TeamAceProject.Controllers
 {
+    // Builds and serves the full Pokemon type matchup chart
     public class TypeController : Controller
     {
+        // All 18 Pokemon types in display order
         private static readonly string[] Types =
         {
             "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
@@ -12,11 +14,14 @@ namespace TeamAceProject.Controllers
             "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
         };
 
+        // Maps each type name to its row/column index in the damage chart
         private static readonly Dictionary<string, int> TypeIndex =
             Types.Select((t, i) => (t, i)).ToDictionary(x => x.t, x => x.i);
 
+        // The 18x18 damage multiplier grid, computed once at startup
         private static readonly double[][] Chart = BuildChart();
 
+        // Fills the chart with all attack-vs-defence multipliers using Gen 6 rules
         private static double[][] BuildChart()
         {
             int n = Types.Length;
@@ -117,6 +122,7 @@ namespace TeamAceProject.Controllers
             return chart;
         }
 
+        // Returns the type chart view with the prebuilt multiplier grid
         [HttpGet]
         public IActionResult Index()
         {

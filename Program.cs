@@ -45,7 +45,7 @@ var app = builder.Build();
 using (IServiceScope scope = app.Services.CreateScope())
 {
     ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
     DemoDataSeeder.Seed(db);
 }
 

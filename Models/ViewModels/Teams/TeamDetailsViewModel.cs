@@ -1,5 +1,11 @@
 namespace TeamAceProject.Models.ViewModels.Teams
 {
+    public class TeamOptionViewModel
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
     public class TeamDetailsViewModel
     {
         public Guid Id { get; set; }

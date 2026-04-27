@@ -5,6 +5,7 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers
 {
+    // Handles user profile viewing and profile updates
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
@@ -14,6 +15,7 @@ namespace TeamAceProject.Controllers
             _userService = userService;
         }
 
+        // Shows the public profile page for any user by their ID
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -27,6 +29,7 @@ namespace TeamAceProject.Controllers
             return View(user);
         }
 
+        // Convenience action that redirects the logged-in user to their own profile
         [Authorize]
         [HttpGet]
         public IActionResult Me()
@@ -40,6 +43,21 @@ namespace TeamAceProject.Controllers
             return RedirectToAction(nameof(Details), new { id = currentUserId.Value });
         }
 
+        // Saves the current user's bio text after verifying ownership
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetBio(Guid userId, string bio)
+        {
+            Guid? currentUserId = User.GetCurrentUserId();
+            if (!currentUserId.HasValue || currentUserId.Value != userId)
+                return Forbid();
+
+            await _userService.SetBioAsync(userId, bio ?? string.Empty);
+            return RedirectToAction(nameof(Details), new { id = userId });
+        }
+
+        // Updates the current user's favorite Pokemon after verifying ownership
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]

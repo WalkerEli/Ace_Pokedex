@@ -15,6 +15,8 @@ namespace TeamAceProject.Models.ViewModels.Users
 
         public string? FavoritePokemonName { get; set; }
 
+        public string? Bio { get; set; }
+
         public int TeamCount { get; set; }
 
         public int PostCount { get; set; }

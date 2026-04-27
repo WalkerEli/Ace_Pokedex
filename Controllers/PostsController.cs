@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Entities;
-using TeamAceProject.Models.Enums;
+using TeamAceProject.Models.ViewModels.Posts;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers
 {
+    // Handles the MVC post feed — list, details, create, edit, and delete
     public class PostsController : Controller
     {
         private readonly IPostService _postService;
@@ -16,6 +17,7 @@ namespace TeamAceProject.Controllers
             _postService = postService;
         }
 
+        // Shows all posts in reverse chronological order
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -23,6 +25,7 @@ namespace TeamAceProject.Controllers
             return View(posts);
         }
 
+        // Shows a single post with its team roster, reactions, and comments
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -36,6 +39,7 @@ namespace TeamAceProject.Controllers
             return View(post);
         }
 
+        // Shows the create post form, optionally pre-selecting a team via query string
         [Authorize]
         [HttpGet]
         public IActionResult Create(Guid? teamId)
@@ -55,6 +59,7 @@ namespace TeamAceProject.Controllers
             return View(post);
         }
 
+        // Saves the new post and redirects to its details page
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,61 +67,86 @@ namespace TeamAceProject.Controllers
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             post.UserId = currentUserId.Value;
 
+            // These are set by the server, not the form — clear any binding errors for them
+            ModelState.Remove(nameof(Post.UserId));
+            ModelState.Remove(nameof(Post.TeamId));
+
+            if (post.TeamId == Guid.Empty)
+                ModelState.AddModelError(nameof(Post.TeamId), "Please select a team.");
+
             if (!ModelState.IsValid)
-            {
                 return View(post);
-            }
 
             Post createdPost = await _postService.CreatePostAsync(post);
             return RedirectToAction(nameof(Details), new { id = createdPost.Id });
         }
 
+        // Shows the edit post form pre-filled with the current team and caption
         [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(Guid postId, string body)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
-            if (string.IsNullOrWhiteSpace(body))
-            {
-                return RedirectToAction(nameof(Details), new { id = postId });
-            }
+            var post = await _postService.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+            if (post.UserId != currentUserId.Value) return Forbid();
 
-            Comment comment = new Comment
+            var input = new EditPostInputModel
             {
-                PostId = postId,
-                UserId = currentUserId.Value,
-                Body = body.Trim(),
+                Id = post.Id,
+                TeamId = post.TeamId,
+                Caption = post.Caption,
             };
 
-            await _postService.AddCommentAsync(comment);
-            return RedirectToAction(nameof(Details), new { id = postId });
+            return View(input);
         }
 
+        // Saves the updated team and caption, then redirects to the post details page
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> React(Guid postId, ReactionType type)
+        public async Task<IActionResult> Edit(EditPostInputModel input)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
-            await _postService.AddOrUpdateReactionAsync(postId, currentUserId.Value, type);
-            return RedirectToAction(nameof(Details), new { id = postId });
+            if (input.TeamId == Guid.Empty)
+                ModelState.AddModelError(nameof(EditPostInputModel.TeamId), "Please select a team.");
+
+            if (!ModelState.IsValid)
+                return View(input);
+
+            bool success = await _postService.EditPostAsync(input, currentUserId.Value);
+            if (!success) return Forbid();
+
+            return RedirectToAction(nameof(Details), new { id = input.Id });
         }
+
+        // Deletes the post after verifying the requester is the owner
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Guid? currentUserId = User.GetCurrentUserId();
+            if (!currentUserId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var post = await _postService.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+            if (post.UserId != currentUserId.Value) return Forbid();
+
+            await _postService.DeletePostAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

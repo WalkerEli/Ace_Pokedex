@@ -12,7 +12,6 @@ public class Post
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    [Required]
     [StringLength(1000)]
     public string Caption { get; set; } = string.Empty;
 

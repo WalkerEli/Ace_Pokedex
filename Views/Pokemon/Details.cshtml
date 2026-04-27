@@ -26,7 +26,11 @@
     </div>
     @if (!string.IsNullOrWhiteSpace(Model.SpriteUrl))
     {
-        <img src="@Model.SpriteUrl" alt="@Model.DisplayName" class="pokemon-sprite" />
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/@(Model.Id).gif"
+             alt="@Model.DisplayName"
+             class="pokemon-sprite"
+             style="image-rendering:pixelated;"
+             onerror="this.src='@Model.SpriteUrl'" />
     }
 </div>
 

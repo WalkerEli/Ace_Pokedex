@@ -25,6 +25,9 @@ public class User
     [StringLength(100)]
     public string? FavoritePokemonName { get; set; }
 
+    [StringLength(500)]
+    public string? Bio { get; set; }
+
     public ICollection<Team> Teams { get; set; } = new List<Team>();
     public ICollection<Post> Posts { get; set; } = new List<Post>();
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();

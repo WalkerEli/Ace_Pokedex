@@ -3,6 +3,7 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers
 {
+    // Fetches and displays Pokemon data sourced live from PokeAPI
     public class PokemonController : Controller
     {
         private readonly IPokemonService _pokemonService;
@@ -12,6 +13,7 @@ namespace TeamAceProject.Controllers
             _pokemonService = pokemonService;
         }
 
+        // Returns a paginated list of Pokemon
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 24)
         {
@@ -19,6 +21,7 @@ namespace TeamAceProject.Controllers
             return View(model);
         }
 
+        // Returns the full details page for a single Pokemon by name or ID
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {

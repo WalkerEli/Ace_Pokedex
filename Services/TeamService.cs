@@ -17,6 +17,25 @@ namespace TeamAceProject.Services
             _pokeApiService = pokeApiService;
         }
 
+        public async Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(Guid userId)
+        {
+            return await _context.Teams.AsNoTracking()
+                .Where(team => team.UserId == userId)
+                .Include(team => team.User)
+                .Include(team => team.TeamMembers)
+                .OrderByDescending(team => team.UpdatedAt)
+                .Select(team => new TeamListItemViewModel
+                {
+                    Id = team.Id,
+                    Name = team.Name,
+                    Username = team.User != null ? team.User.Username : "unknown",
+                    IsPublic = team.IsPublic,
+                    MemberCount = team.TeamMembers.Count,
+                    UpdatedAt = team.UpdatedAt,
+                })
+                .ToListAsync();
+        }
+
         public async Task<List<TeamListItemViewModel>> GetAllTeamsAsync()
         {
             return await _context.Teams.AsNoTracking()
@@ -79,6 +98,23 @@ namespace TeamAceProject.Services
             }
 
             return model;
+        }
+
+        public async Task<List<TeamOptionViewModel>> GetUserTeamOptionsAsync(Guid userId)
+        {
+            return await _context.Teams
+                .Where(t => t.UserId == userId)
+                .OrderBy(t => t.Name)
+                .Select(t => new TeamOptionViewModel { Id = t.Id, Name = t.Name })
+                .ToListAsync();
+        }
+
+        public async Task<Guid?> GetTeamOwnerIdAsync(Guid teamId)
+        {
+            return await _context.Teams
+                .Where(t => t.Id == teamId)
+                .Select(t => (Guid?)t.UserId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Team> CreateTeamAsync(Team team)
@@ -191,6 +227,72 @@ namespace TeamAceProject.Services
             team.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return teamMember;
+        }
+
+        public async Task<TeamMember> EditTeamMemberAsync(EditTeamMemberInputModel input)
+        {
+            TeamMember? member = await _context.TeamMembers
+                .FirstOrDefaultAsync(m => m.Id == input.TeamMemberId);
+
+            if (member == null)
+                throw new InvalidOperationException("Team member not found.");
+
+            string normalizedPokemonName = NormalizeApiName(input.PokemonName);
+            var pokemon = await _pokeApiService.GetPokemonByNameAsync(normalizedPokemonName);
+            if (pokemon == null)
+                throw new InvalidOperationException("Pokemon not found in PokeAPI.");
+
+            if (!string.IsNullOrWhiteSpace(input.AbilityName))
+            {
+                string normalizedAbility = NormalizeApiName(input.AbilityName);
+                bool matchingAbility = pokemon.Abilities.Any(a => a.Ability.Name == normalizedAbility);
+                if (!matchingAbility)
+                    throw new InvalidOperationException("That ability is not available for the selected Pokemon.");
+            }
+
+            member.PokemonId = pokemon.Id;
+            member.PokemonName = pokemon.Name;
+            member.PokemonSpriteUrl = pokemon.Sprites.Front_Default;
+            member.AbilityName = NormalizeOptional(input.AbilityName);
+            member.NatureName = NormalizeOptional(input.NatureName);
+            member.HeldItemName = NormalizeOptional(input.HeldItemName);
+
+            var existingMoves = await _context.TeamMemberMoves
+                .Where(m => m.TeamMemberId == input.TeamMemberId)
+                .ToListAsync();
+            _context.TeamMemberMoves.RemoveRange(existingMoves);
+
+            List<string?> moveNames = new List<string?> { input.Move1, input.Move2, input.Move3, input.Move4 };
+            int moveSlot = 1;
+            foreach (string? moveName in moveNames)
+            {
+                if (string.IsNullOrWhiteSpace(moveName))
+                {
+                    moveSlot++;
+                    continue;
+                }
+
+                string normalizedMove = NormalizeApiName(moveName);
+                bool matchingMove = pokemon.Moves.Any(m => m.Move.Name == normalizedMove);
+                if (!matchingMove)
+                    throw new InvalidOperationException($"{moveName} is not a valid move for {pokemon.Name}.");
+
+                _context.TeamMemberMoves.Add(new TeamMemberMove
+                {
+                    Id = Guid.NewGuid(),
+                    TeamMemberId = member.Id,
+                    MoveSlot = moveSlot,
+                    MoveName = normalizedMove,
+                });
+
+                moveSlot++;
+            }
+
+            Team? team = await _context.Teams.FindAsync(member.TeamId);
+            if (team != null) team.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return member;
         }
 
         public async Task<bool> RemoveTeamMemberAsync(Guid teamMemberId)

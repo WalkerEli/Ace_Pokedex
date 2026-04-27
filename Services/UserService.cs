@@ -42,6 +42,7 @@ namespace TeamAceProject.Services
                     Email = user.Email,
                     FavoritePokemonId = user.FavoritePokemonId,
                     FavoritePokemonName = user.FavoritePokemonName,
+                    Bio = user.Bio,
                     TeamCount = user.Teams.Count,
                     PostCount = user.Posts.Count,
                     Teams = user.Teams
@@ -125,6 +126,16 @@ namespace TeamAceProject.Services
             user.FavoritePokemonId = pokemonId;
             user.FavoritePokemonName = pokemonName.Trim().ToLowerInvariant();
 
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> SetBioAsync(Guid userId, string bio)
+        {
+            User? user = await _context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            user.Bio = bio.Trim();
             await _context.SaveChangesAsync();
             return true;
         }
