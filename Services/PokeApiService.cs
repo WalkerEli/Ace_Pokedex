@@ -23,6 +23,11 @@ namespace TeamAceProject.Services
             return GetAsync<PokemonListResponseDto>($"pokemon?limit={limit}&offset={offset}");
         }
 
+        public Task<PokemonListResponseDto?> GetMoveListAsync(int limit, int offset)
+        {
+            return GetAsync<PokemonListResponseDto>($"move?limit={limit}&offset={offset}");
+        }
+
         public Task<PokemonDetailDto?> GetPokemonByNameAsync(string name)
         {
             return GetAsync<PokemonDetailDto>($"pokemon/{NormalizeKey(name)}");
@@ -51,6 +56,21 @@ namespace TeamAceProject.Services
         public Task<ItemDetailDto?> GetItemByNameAsync(string name)
         {
             return GetAsync<ItemDetailDto>($"item/{NormalizeKey(name)}");
+        }
+
+        public Task<PokemonListResponseDto?> GetAbilityListAsync(int limit, int offset)
+        {
+            return GetAsync<PokemonListResponseDto>($"ability?limit={limit}&offset={offset}");
+        }
+
+        public Task<PokemonListResponseDto?> GetNatureListAsync()
+        {
+            return GetAsync<PokemonListResponseDto>("nature?limit=100");
+        }
+
+        public Task<ItemAttributeDto?> GetItemAttributeAsync(string name)
+        {
+            return GetAsync<ItemAttributeDto>($"item-attribute/{NormalizeKey(name)}");
         }
 
         private async Task<T?> GetAsync<T>(string relativeUrl)

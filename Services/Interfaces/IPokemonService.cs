@@ -6,5 +6,6 @@ namespace TeamAceProject.Services.Interfaces
     {
         Task<PokemonListPageViewModel> GetPokemonPageAsync(int pageNumber, int pageSize);
         Task<PokemonDetailViewModel?> GetPokemonDetailsAsync(string nameOrId);
+        Task<List<PokemonListItemViewModel>> SearchPokemonAsync(string query);
     }
 }

@@ -1,0 +1,83 @@
+@model TeamAceProject.Models.ViewModels.Natures.NatureDetailViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+
+    string[] allStats = { "Hp", "Attack", "Defense", "Special Attack", "Special Defense", "Speed" };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <h1 class="mb-0">@Model.DisplayName</h1>
+    <a class="btn btn-outline-secondary" asp-action="Index">back to natures</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">stat changes</h2>
+                @if (Model.IsNeutral)
+                {
+                    <p class="text-muted mb-0">@Model.DisplayName is a neutral nature — it does not affect any stats.</p>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            @foreach (var stat in allStats)
+                            {
+                                bool increased = stat == Model.IncreasedStat;
+                                bool decreased = stat == Model.DecreasedStat;
+                                <tr>
+                                    <td>@stat</td>
+                                    <td class="text-end">
+                                        @if (increased)
+                                        {
+                                            <span class="badge text-bg-success">↑ +10%</span>
+                                        }
+                                        else if (decreased)
+                                        {
+                                            <span class="badge text-bg-danger">↓ −10%</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (Model.LikesFlavor != null || Model.HatesFlavor != null)
+    {
+        <div class="col-lg-6">
+            <div class="card shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">flavor preferences</h2>
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            @if (Model.LikesFlavor != null)
+                            {
+                                <tr>
+                                    <td class="text-muted">likes</td>
+                                    <td><strong>@Model.LikesFlavor</strong></td>
+                                </tr>
+                            }
+                            @if (Model.HatesFlavor != null)
+                            {
+                                <tr>
+                                    <td class="text-muted">dislikes</td>
+                                    <td><strong>@Model.HatesFlavor</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

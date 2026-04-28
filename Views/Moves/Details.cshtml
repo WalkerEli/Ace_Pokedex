@@ -1,0 +1,123 @@
+@model TeamAceProject.Models.ViewModels.Moves.MoveDetailViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="mb-2">@Model.DisplayName</h1>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge pokemon-type-@Model.Type.ToLower()">@Model.Type</span>
+            <span class="badge text-bg-secondary">@Model.DamageClass</span>
+        </div>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">back to moves</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">stats</h2>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted">power</td>
+                            <td><strong>@(Model.Power.HasValue ? Model.Power.ToString() : "—")</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">accuracy</td>
+                            <td><strong>@(Model.Accuracy.HasValue ? Model.Accuracy + "%" : "—")</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">pp</td>
+                            <td><strong>@Model.PP</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-2">description</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.ShortEffect))
+                {
+                    <p class="mb-2">@Model.ShortEffect</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Effect) && Model.Effect != Model.ShortEffect)
+                {
+                    <p class="text-muted small mb-0" style="white-space:pre-line;">@Model.Effect</p>
+                }
+                @if (string.IsNullOrWhiteSpace(Model.ShortEffect) && string.IsNullOrWhiteSpace(Model.Effect))
+                {
+                    <p class="text-muted mb-0">No description available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">super effective against</h2>
+                @if (Model.SuperEffectiveAgainst.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var type in Model.SuperEffectiveAgainst)
+                        {
+                            <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">none</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">not very effective against</h2>
+                @if (Model.NotVeryEffectiveAgainst.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var type in Model.NotVeryEffectiveAgainst)
+                        {
+                            <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">none</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">does no damage to</h2>
+                @if (Model.NoEffectAgainst.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var type in Model.NoEffectAgainst)
+                        {
+                            <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">none</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

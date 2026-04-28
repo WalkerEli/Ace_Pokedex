@@ -1,0 +1,52 @@
+@model TeamAceProject.Models.ViewModels.Abilities.AbilityDetailViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <h1 class="mb-0">@Model.DisplayName</h1>
+    <a class="btn btn-outline-secondary" asp-action="Index">back to abilities</a>
+</div>
+
+<div class="card shadow-sm rounded-4 mb-4">
+    <div class="card-body">
+        <h2 class="h5 mb-2">what it does</h2>
+        @if (!string.IsNullOrWhiteSpace(Model.ShortEffect))
+        {
+            <p class="mb-2">@Model.ShortEffect</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Effect) && Model.Effect != Model.ShortEffect)
+        {
+            <p class="text-muted small mb-0" style="white-space:pre-line;">@Model.Effect</p>
+        }
+        @if (string.IsNullOrWhiteSpace(Model.ShortEffect) && string.IsNullOrWhiteSpace(Model.Effect))
+        {
+            <p class="text-muted mb-0">No description available.</p>
+        }
+    </div>
+</div>
+
+@if (Model.Pokemon.Any())
+{
+    <h2 class="h5 mb-3">pokemon with this ability <span class="text-muted fw-normal fs-6">(@Model.Pokemon.Count)</span></h2>
+    <div class="row g-3">
+        @foreach (var p in Model.Pokemon)
+        {
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <a asp-controller="Pokemon" asp-action="Details" asp-route-id="@p.Name"
+                   class="card h-100 shadow-sm rounded-4 text-center text-decoration-none text-dark">
+                    <div class="card-body d-flex flex-column align-items-center p-2">
+                        <img src="@p.SpriteUrl" alt="@p.DisplayName"
+                             style="width:56px;height:56px;image-rendering:pixelated;"
+                             onerror="this.style.visibility='hidden'" />
+                        <div class="small mt-1">@p.DisplayName</div>
+                        @if (p.IsHidden)
+                        {
+                            <span class="badge text-bg-secondary mt-1" style="font-size:0.65rem;">hidden</span>
+                        }
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

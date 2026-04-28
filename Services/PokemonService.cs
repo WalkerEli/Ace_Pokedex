@@ -89,6 +89,26 @@ namespace TeamAceProject.Services
             return model;
         }
 
+        public async Task<List<PokemonListItemViewModel>> SearchPokemonAsync(string query)
+        {
+            string normalized = query.Trim().ToLowerInvariant().Replace(' ', '-');
+            PokemonListResponseDto? all = await _pokeApiService.GetPokemonListAsync(2000, 0);
+
+            if (all == null)
+                return new List<PokemonListItemViewModel>();
+
+            return all.Results
+                .Where(p => p.Name.Contains(normalized))
+                .Select(p => new PokemonListItemViewModel
+                {
+                    Id = ExtractIdFromUrl(p.Url),
+                    Name = p.Name,
+                    DisplayName = ToDisplayName(p.Name),
+                })
+                .OrderBy(p => p.Id)
+                .ToList();
+        }
+
         private async Task<PokemonDetailDto?> GetPokemonAsync(string nameOrId)
         {
             if (int.TryParse(nameOrId, out int id))

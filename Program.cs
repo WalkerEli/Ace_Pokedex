@@ -26,6 +26,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IMovesService, MovesService>();
+builder.Services.AddScoped<IAbilitiesService, AbilitiesService>();
+builder.Services.AddScoped<INaturesService, NaturesService>();
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();

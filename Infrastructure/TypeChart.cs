@@ -53,6 +53,28 @@ namespace TeamAceProject.Infrastructure
                 .OrderByDescending(x => x.Multiplier);
         }
 
+        // Matchups for a single attacking move type against all 18 defending types.
+        public static (List<string> SuperEffective, List<string> NotVeryEffective, List<string> NoEffect) GetMoveMatchups(string attackType)
+        {
+            if (!TypeIndex.ContainsKey(attackType))
+                return (new List<string>(), new List<string>(), new List<string>());
+
+            int atkIdx = TypeIndex[attackType];
+            var super = new List<string>();
+            var notVery = new List<string>();
+            var none = new List<string>();
+
+            for (int defIdx = 0; defIdx < Types.Length; defIdx++)
+            {
+                double mult = Chart[atkIdx][defIdx];
+                if (mult > 1.0) super.Add(Types[defIdx]);
+                else if (mult > 0 && mult < 1.0) notVery.Add(Types[defIdx]);
+                else if (mult == 0) none.Add(Types[defIdx]);
+            }
+
+            return (super, notVery, none);
+        }
+
         private static double[][] BuildChart()
         {
             int n = Types.Length;

@@ -1,0 +1,54 @@
+@model TeamAceProject.Models.ViewModels.Items.ItemDetailViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div class="d-flex align-items-center gap-3">
+        @if (!string.IsNullOrWhiteSpace(Model.SpriteUrl))
+        {
+            <img src="@Model.SpriteUrl" alt="@Model.DisplayName"
+                 style="width:64px;height:64px;image-rendering:pixelated;flex-shrink:0;"
+                 onerror="this.style.visibility='hidden'" />
+        }
+        <div>
+            <h1 class="mb-1">@Model.DisplayName</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Category))
+            {
+                <span class="badge text-bg-secondary">@Model.Category</span>
+            }
+        </div>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">back to items</a>
+</div>
+
+<div class="row g-4">
+    @if (!string.IsNullOrWhiteSpace(Model.ShortEffect))
+    {
+        <div class="col-12">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-2">summary</h2>
+                    <p class="mb-0">@Model.ShortEffect</p>
+                </div>
+            </div>
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Effect))
+    {
+        <div class="col-12">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-2">full effect</h2>
+                    <p class="mb-0" style="white-space:pre-line;">@Model.Effect</p>
+                </div>
+            </div>
+        </div>
+    }
+    @if (string.IsNullOrWhiteSpace(Model.Effect) && string.IsNullOrWhiteSpace(Model.ShortEffect))
+    {
+        <div class="col-12">
+            <p class="text-muted">No effect description available.</p>
+        </div>
+    }
+</div>

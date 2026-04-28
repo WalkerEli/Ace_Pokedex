@@ -1,15 +1,44 @@
+@model List<TeamAceProject.Models.ViewModels.Pokemon.PokemonListItemViewModel>
 @{
     ViewData["Title"] = "Search";
+    string? query = ViewData["Query"] as string;
 }
 
-<div class="card shadow-sm rounded-4">
-    <div class="card-body">
-        <h1 class="mb-3">search pokemon</h1>
-        <form method="get">
-            <div class="input-group">
-                <input type="text" name="query" class="form-control" placeholder="example: ditto" />
-                <button class="btn btn-primary" type="submit">go</button>
-            </div>
-        </form>
-    </div>
+<div class="mb-4">
+    <h1 class="mb-3">search pokemon</h1>
+    <form method="get" class="d-flex gap-2">
+        <input type="text" name="query" value="@query" class="form-control" placeholder="e.g. char, saur, pika" autofocus />
+        <button class="btn btn-primary" type="submit">search</button>
+    </form>
 </div>
+
+@if (query != null)
+{
+    if (Model.Count == 0)
+    {
+        <p class="text-muted">No Pokemon found matching "<strong>@query</strong>".</p>
+    }
+    else
+    {
+        <p class="text-muted mb-3">@Model.Count result@(Model.Count == 1 ? "" : "s") for "<strong>@query</strong>"</p>
+        <div class="row g-3">
+            @foreach (var pokemon in Model)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm rounded-4 text-center">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/@(pokemon.Id).gif"
+                                 alt="@pokemon.DisplayName"
+                                 style="width:64px;height:64px;image-rendering:pixelated;"
+                                 onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/@(pokemon.Id).png'" />
+                            <div class="small text-muted">#@pokemon.Id</div>
+                            <h2 class="h5 mt-1 mb-3">@pokemon.DisplayName</h2>
+                            <a class="btn btn-outline-primary mt-auto w-100"
+                               asp-controller="Pokemon" asp-action="Details" asp-route-id="@pokemon.Name">details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
