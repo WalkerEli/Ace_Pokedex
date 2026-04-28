@@ -1,0 +1,23 @@
+@model TeamAceProject.Models.ViewModels.Posts.PostDetailsViewModel
+@{
+    ViewData["Title"] = "Delete Post";
+}
+
+<h1 class="mb-4">delete post</h1>
+
+<div class="card shadow-sm rounded-4">
+    <div class="card-body">
+        <p>Are you sure you want to delete this post by <strong>@Model.Username</strong>? This action cannot be undone.</p>
+        <p class="text-muted">@Model.Caption</p>
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">yes, delete</button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

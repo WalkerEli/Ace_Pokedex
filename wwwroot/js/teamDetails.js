@@ -36,7 +36,7 @@
         if (abilitySelect) abilitySelect.innerHTML = '<option value="">-- select a pokemon first --</option>';
     }
 
-    // ── Load Pokemon list and items list ────────────────────────────────────
+    // Load Pokemon list and items list 
     let allApiNames = [];
     const [pokemonRes, itemsRes] = await Promise.allSettled([
         fetch('https://pokeapi.co/api/v2/pokemon?limit=1302'),
@@ -60,7 +60,7 @@
         if (heldItemInput) { heldItemInput.placeholder = 'could not load items'; heldItemInput.disabled = true; }
     }
 
-    // ── Add member: Pokemon change ───────────────────────────────────────────
+    // Add member: Pokemon change 
     if (pokemonInput) {
         pokemonInput.addEventListener('change', async function () {
             const normalized = this.value.trim().toLowerCase().replace(/\s+/g, '-');
@@ -99,7 +99,7 @@
         });
     }
 
-    // ── Edit member helpers ──────────────────────────────────────────────────
+    // Edit member helpers
     // Fetches Pokemon data from PokeAPI and populates the edit panel's ability/move fields
     async function loadEditPanel(panel, apiName, currentAbility) {
         const editAbilitySelect = panel.querySelector('.edit-ability-select');
@@ -130,7 +130,7 @@
         }
     }
 
-    // ── Edit member: open / close ────────────────────────────────────────────
+    // Edit member: open / close
     document.querySelectorAll('.btn-edit-member').forEach(function (btn) {
         btn.addEventListener('click', async function () {
             const panel = document.getElementById(`edit-panel-${this.dataset.memberId}`);
@@ -153,7 +153,7 @@
         });
     });
 
-    // ── Edit member: Pokemon change re-loads abilities and moves ─────────────
+    // Edit member: Pokemon change re-loads abilities and moves
     document.querySelectorAll('.edit-pokemon-input').forEach(function (input) {
         input.addEventListener('change', async function () {
             const panel           = this.closest('.edit-member-panel');

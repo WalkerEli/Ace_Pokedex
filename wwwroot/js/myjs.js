@@ -5,17 +5,6 @@ export function getAntiForgeryToken() {
     return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
 }
 
-// Sends a POST request with FormData and returns the parsed JSON response
-export async function ajaxPost(url, formData) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        body: formData,
-    });
-    if (!response.ok) throw new Error(await response.text());
-    return response.json();
-}
-
 // Delays invoking fn until the user stops triggering it for `wait` milliseconds
 export function debounce(fn, wait) {
     let timer;

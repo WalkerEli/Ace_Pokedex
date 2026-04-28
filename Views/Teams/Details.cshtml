@@ -13,10 +13,6 @@
         <span class="badge @(Model.IsPublic ? "text-bg-success" : "text-bg-secondary")">@(Model.IsPublic ? "public" : "private")</span>
     </div>
     <div class="d-flex gap-2">
-        @if (isOwner)
-        {
-            <a class="btn btn-outline-secondary" asp-controller="Posts" asp-action="Create" asp-route-teamId="@Model.Id">create post</a>
-        }
         <div id="share-target" class="d-flex gap-2"></div>
         @if (isOwner)
         {
@@ -27,6 +23,7 @@
                 <button type="submit" class="btn btn-outline-danger">delete team</button>
             </form>
         }
+        <a class="btn btn-primary" asp-controller="Teams" asp-action="Index">save</a>
     </div>
 </div>
 
@@ -63,7 +60,13 @@
                                         }
                                         <div>
                                             <div class="small text-muted">slot @member.SlotIndex</div>
-                                            <h3 class="h5 mb-2">@member.PokemonName</h3>
+                                            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                                                <h3 class="h5 mb-0">@member.PokemonName</h3>
+                                                @foreach (var type in member.Types)
+                                                {
+                                                    <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                                                }
+                                            </div>
                                             <div><strong>ability:</strong> @(string.IsNullOrWhiteSpace(member.AbilityName) ? "-" : member.AbilityName)</div>
                                             <div><strong>nature:</strong> @(string.IsNullOrWhiteSpace(member.NatureName) ? "-" : member.NatureName)</div>
                                             <div><strong>held item:</strong> @(string.IsNullOrWhiteSpace(member.HeldItemName) ? "-" : member.HeldItemName)</div>

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TeamAceProject.Data;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Auth;
 using TeamAceProject.Models.ViewModels.Users;

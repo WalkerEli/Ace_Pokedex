@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Pokemon;
 using TeamAceProject.Services.Interfaces;
@@ -63,6 +64,9 @@ namespace TeamAceProject.Services
                 DisplayName = ToDisplayName(dto.Name),
                 SpriteUrl = dto.Sprites.Front_Default,
                 Abilities = dto.Abilities.Select(ability => ToDisplayName(ability.Ability.Name)).ToList(),
+                Types = dto.Types.Select(t => ToDisplayName(t.Type.Name)).ToList(),
+                Weaknesses = TypeChart.GetWeaknesses(dto.Types.Select(t => ToDisplayName(t.Type.Name))).ToList(),
+                SuperEffectiveAgainst = TypeChart.GetSuperEffectiveAgainst(dto.Types.Select(t => ToDisplayName(t.Type.Name))).ToList(),
                 Moves = dto.Moves
                     .Take(24)
                     .Select(move => new MoveSummaryViewModel

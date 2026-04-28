@@ -1,0 +1,22 @@
+@model TeamAceProject.Models.ViewModels.Teams.TeamDetailsViewModel
+@{
+    ViewData["Title"] = "Delete Team";
+}
+
+<h1 class="mb-4">delete team</h1>
+
+<div class="card shadow-sm rounded-4">
+    <div class="card-body">
+        <p>Are you sure you want to delete <strong>@Model.Name</strong>? This action cannot be undone.</p>
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">yes, delete</button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

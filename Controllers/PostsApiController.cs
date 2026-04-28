@@ -9,7 +9,7 @@ namespace TeamAceProject.Controllers
 {
     // JSON-only API endpoints consumed by post.js for reactions and comment CRUD
     [ApiController]
-    [Route("api/posts")]
+    [Route("api/[controller]")]
     public class PostsApiController : ControllerBase
     {
         private readonly IPostService _postService;
@@ -58,9 +58,9 @@ namespace TeamAceProject.Controllers
 
         // Deletes a comment after verifying the requester owns it
         [Authorize]
-        [HttpPost("delete-comment")]
+        [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteComment([FromForm] Guid id)
+        public async Task<IActionResult> DeleteComment(Guid id)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
@@ -73,9 +73,9 @@ namespace TeamAceProject.Controllers
 
         // Updates a comment's body text after verifying the requester owns it
         [Authorize]
-        [HttpPost("edit-comment")]
+        [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditComment([FromForm] Guid id, [FromForm] string body)
+        public async Task<IActionResult> EditComment(Guid id, [FromForm] string body)
         {
             Guid? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();

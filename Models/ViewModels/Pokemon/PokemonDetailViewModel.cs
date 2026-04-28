@@ -9,6 +9,9 @@ namespace TeamAceProject.Models.ViewModels.Pokemon
         public List<PokemonStatViewModel> Stats { get; set; } = new List<PokemonStatViewModel>();
         public List<string> Abilities { get; set; } = new List<string>();
         public List<MoveSummaryViewModel> Moves { get; set; } = new List<MoveSummaryViewModel>();
+        public List<string> Types { get; set; } = new List<string>();
+        public List<(string Type, double Multiplier)> Weaknesses { get; set; } = new();
+        public List<(string Type, double Multiplier)> SuperEffectiveAgainst { get; set; } = new();
     }
 
     public class PokemonStatViewModel

@@ -8,7 +8,16 @@
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div>
         <div class="small text-muted">#@Model.Id</div>
-        <h1 class="mb-2">@Model.DisplayName</h1>
+        <h1 class="mb-1">@Model.DisplayName</h1>
+        @if (Model.Types.Any())
+        {
+            <div class="mb-2">
+                @foreach (var type in Model.Types)
+                {
+                    <span class="badge me-1 pokemon-type-@type.ToLower()">@type</span>
+                }
+            </div>
+        }
         @if (User.Identity?.IsAuthenticated == true && currentUserId.HasValue)
         {
             <form asp-controller="Users" asp-action="FavoritePokemon" method="post" class="d-inline">
@@ -77,6 +86,55 @@
                         <span class="badge text-bg-light border">@move.DisplayName</span>
                     }
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-0">
+    <div class="col-lg-6">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">weaknesses</h2>
+                @if (Model.Weaknesses.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var (type, mult) in Model.Weaknesses)
+                        {
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                                <span class="small text-muted">@(mult == 4 ? "4×" : "2×")</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">no weaknesses</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">super effective against</h2>
+                @if (Model.SuperEffectiveAgainst.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var (type, mult) in Model.SuperEffectiveAgainst)
+                        {
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge pokemon-type-@type.ToLower()">@type</span>
+                                <span class="small text-muted">@(mult == 4 ? "4×" : "2×")</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">no super effective matchups</p>
+                }
             </div>
         </div>
     </div>

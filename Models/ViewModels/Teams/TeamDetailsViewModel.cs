@@ -29,5 +29,6 @@ namespace TeamAceProject.Models.ViewModels.Teams
         public string? NatureName { get; set; }
         public string? HeldItemName { get; set; }
         public List<string> Moves { get; set; } = new List<string>();
+        public List<string> Types { get; set; } = new List<string>();
     }
 }

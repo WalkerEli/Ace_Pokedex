@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TeamAceProject.Data;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Teams;
 using TeamAceProject.Services.Interfaces;
@@ -87,6 +86,9 @@ namespace TeamAceProject.Services
                     PokemonId = member.PokemonId,
                     PokemonName = ToDisplayName(member.PokemonName),
                     PokemonSpriteUrl = member.PokemonSpriteUrl,
+                    Types = string.IsNullOrWhiteSpace(member.PokemonTypes)
+                        ? new List<string>()
+                        : member.PokemonTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
                     AbilityName = ToDisplayNameOrEmpty(member.AbilityName),
                     NatureName = ToDisplayNameOrEmpty(member.NatureName),
                     HeldItemName = ToDisplayNameOrEmpty(member.HeldItemName),
@@ -190,6 +192,7 @@ namespace TeamAceProject.Services
                 PokemonId = pokemon.Id,
                 PokemonName = pokemon.Name,
                 PokemonSpriteUrl = pokemon.Sprites.Front_Default,
+                PokemonTypes = string.Join(",", pokemon.Types.Select(t => ToDisplayName(t.Type.Name))),
                 AbilityName = NormalizeOptional(input.AbilityName),
                 NatureName = NormalizeOptional(input.NatureName),
                 HeldItemName = NormalizeOptional(input.HeldItemName),
@@ -253,6 +256,7 @@ namespace TeamAceProject.Services
             member.PokemonId = pokemon.Id;
             member.PokemonName = pokemon.Name;
             member.PokemonSpriteUrl = pokemon.Sprites.Front_Default;
+            member.PokemonTypes = string.Join(",", pokemon.Types.Select(t => ToDisplayName(t.Type.Name)));
             member.AbilityName = NormalizeOptional(input.AbilityName);
             member.NatureName = NormalizeOptional(input.NatureName);
             member.HeldItemName = NormalizeOptional(input.HeldItemName);
