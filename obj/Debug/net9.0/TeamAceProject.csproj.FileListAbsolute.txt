@@ -447,6 +447,5 @@ C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_w
 C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\TeamAceProject.pdb
 C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\TeamAceProject.genruntimeconfig.cache
 C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\ref\TeamAceProject.dll
-C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\compressed\o2cwjgnzdf-ww52dfu31d.gz
 C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\compressed\g4gl694ouz-ia31htvuwi.gz
-C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\eliwa\OneDrive - East Tennessee State University\Spring_2026\advanced_web\Ace_Pokedex\obj\Debug\net9.0\compressed\o2cwjgnzdf-nwak5v0poz.gz
