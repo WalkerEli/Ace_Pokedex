@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Services;
 
@@ -15,7 +15,7 @@ namespace TeamAceProject.Data
 
             User user = new User
             {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Id = 1,
                 Username = "demo-trainer",
                 Email = "demo@teamace.local",
                 FavoritePokemonId = 25,
@@ -27,7 +27,7 @@ namespace TeamAceProject.Data
 
             Team team = new Team
             {
-                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                Id = 2,
                 UserId = user.Id,
                 Name = "sample squad",
                 IsPublic = true,
@@ -36,7 +36,7 @@ namespace TeamAceProject.Data
 
             TeamMember member = new TeamMember
             {
-                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                Id = 3,
                 TeamId = team.Id,
                 SlotIndex = 1,
                 PokemonId = 25,
@@ -49,7 +49,6 @@ namespace TeamAceProject.Data
 
             TeamMemberMove move1 = new TeamMemberMove
             {
-                Id = Guid.NewGuid(),
                 TeamMemberId = member.Id,
                 MoveSlot = 1,
                 MoveName = "thunderbolt",
@@ -57,7 +56,6 @@ namespace TeamAceProject.Data
 
             TeamMemberMove move2 = new TeamMemberMove
             {
-                Id = Guid.NewGuid(),
                 TeamMemberId = member.Id,
                 MoveSlot = 2,
                 MoveName = "volt-tackle",
@@ -65,7 +63,7 @@ namespace TeamAceProject.Data
 
             Post post = new Post
             {
-                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                Id = 4,
                 TeamId = team.Id,
                 UserId = user.Id,
                 Caption = "starting point for the rebuilt api-first project",

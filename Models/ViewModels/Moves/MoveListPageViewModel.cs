@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Moves
+﻿namespace TeamAceProject.Models.ViewModels.Moves
 {
     public class MoveListPageViewModel
     {

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace TeamAceProject.Models.ViewModels.Users
 {
     public class UserDetailsViewModel
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string Username { get; set; } = string.Empty;
 

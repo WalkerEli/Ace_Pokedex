@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Models.ViewModels.Abilities;
 using TeamAceProject.Services.Interfaces;
 
@@ -6,17 +6,17 @@ namespace TeamAceProject.Controllers
 {
     public class AbilitiesController : Controller
     {
-        private readonly IAbilitiesService _abilitiesService;
+        private readonly IAbilitiesRepository _abilitiesRepo;
 
-        public AbilitiesController(IAbilitiesService abilitiesService)
+        public AbilitiesController(IAbilitiesRepository AbilitiesRepository)
         {
-            _abilitiesService = abilitiesService;
+            _abilitiesRepo = AbilitiesRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 30, string? query = null)
         {
-            AbilityListPageViewModel model = await _abilitiesService.GetAbilitiesPageAsync(page, pageSize, query);
+            AbilityListPageViewModel model = await _abilitiesRepo.GetAbilitiesPageAsync(page, pageSize, query);
             return View(model);
         }
 
@@ -26,7 +26,7 @@ namespace TeamAceProject.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return NotFound();
 
-            AbilityDetailViewModel? model = await _abilitiesService.GetAbilityDetailsAsync(name);
+            AbilityDetailViewModel? model = await _abilitiesRepo.GetAbilityDetailsAsync(name);
             if (model == null)
                 return NotFound();
 

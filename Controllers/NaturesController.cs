@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Models.ViewModels.Natures;
 using TeamAceProject.Services.Interfaces;
 
@@ -6,17 +6,17 @@ namespace TeamAceProject.Controllers
 {
     public class NaturesController : Controller
     {
-        private readonly INaturesService _naturesService;
+        private readonly INaturesRepository _naturesRepo;
 
-        public NaturesController(INaturesService naturesService)
+        public NaturesController(INaturesRepository NaturesRepository)
         {
-            _naturesService = naturesService;
+            _naturesRepo = NaturesRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(string? query = null)
         {
-            NatureListViewModel model = await _naturesService.GetAllNaturesAsync(query);
+            NatureListViewModel model = await _naturesRepo.GetAllNaturesAsync(query);
             return View(model);
         }
 
@@ -26,7 +26,7 @@ namespace TeamAceProject.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return NotFound();
 
-            NatureDetailViewModel? model = await _naturesService.GetNatureDetailsAsync(name);
+            NatureDetailViewModel? model = await _naturesRepo.GetNatureDetailsAsync(name);
             if (model == null)
                 return NotFound();
 

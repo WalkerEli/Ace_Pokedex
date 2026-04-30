@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Type
+﻿namespace TeamAceProject.Models.ViewModels.Type
 {
     public class TypeChartViewModel
     {

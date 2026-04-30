@@ -1,14 +1,14 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TeamAceProject.Models.Entities;
 
 public class Comment
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid PostId { get; set; }
+    public int PostId { get; set; }
 
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     [Required]
     [StringLength(1000)]

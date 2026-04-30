@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Models.ViewModels.Moves;
 using TeamAceProject.Services.Interfaces;
 
@@ -6,17 +6,17 @@ namespace TeamAceProject.Controllers
 {
     public class MovesController : Controller
     {
-        private readonly IMovesService _movesService;
+        private readonly IMovesRepository _movesRepo;
 
-        public MovesController(IMovesService movesService)
+        public MovesController(IMovesRepository MovesRepository)
         {
-            _movesService = movesService;
+            _movesRepo = MovesRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 24, string? query = null)
         {
-            MoveListPageViewModel model = await _movesService.GetMovesPageAsync(page, pageSize, query);
+            MoveListPageViewModel model = await _movesRepo.GetMovesPageAsync(page, pageSize, query);
             return View(model);
         }
 
@@ -26,7 +26,7 @@ namespace TeamAceProject.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return NotFound();
 
-            MoveDetailViewModel? model = await _movesService.GetMoveDetailsAsync(name);
+            MoveDetailViewModel? model = await _movesRepo.GetMoveDetailsAsync(name);
             if (model == null)
                 return NotFound();
 

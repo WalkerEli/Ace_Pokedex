@@ -1,17 +1,17 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Items;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class ItemService : IItemService
+    public class ItemRepository : IItemRepository
     {
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public ItemService(IPokeApiService pokeApiService)
+        public ItemRepository(IPokeApiRepository PokeApiRepository)
         {
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<ItemListPageViewModel> GetHeldItemsPageAsync(int pageNumber, int pageSize, string? query = null)
@@ -19,7 +19,7 @@ namespace TeamAceProject.Services
             int safePage = Math.Max(1, pageNumber);
             int safeSize = Math.Clamp(pageSize, 1, 60);
 
-            ItemAttributeDto? attribute = await _pokeApiService.GetItemAttributeAsync("holdable");
+            ItemAttributeDto? attribute = await _pokeApiRepo.GetItemAttributeAsync("holdable");
 
             ItemListPageViewModel model = new ItemListPageViewModel
             {
@@ -56,7 +56,7 @@ namespace TeamAceProject.Services
 
         public async Task<ItemDetailViewModel?> GetItemDetailsAsync(string name)
         {
-            ItemDetailDto? dto = await _pokeApiService.GetItemByNameAsync(name);
+            ItemDetailDto? dto = await _pokeApiRepo.GetItemByNameAsync(name);
             if (dto == null)
                 return null;
 

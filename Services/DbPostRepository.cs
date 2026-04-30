@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.Enums;
 using TeamAceProject.Models.ViewModels.Posts;
@@ -6,11 +6,11 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class PostService : IPostService
+    public class DbPostRepository : IPostRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public PostService(ApplicationDbContext context)
+        public DbPostRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -48,7 +48,7 @@ namespace TeamAceProject.Services
             }).ToList();
         }
 
-        public async Task<PostDetailsViewModel?> GetPostByIdAsync(Guid postId)
+        public async Task<PostDetailsViewModel?> GetPostByIdAsync(int postId)
         {
             Post? post = await _context.Posts.AsNoTracking()
                 .Include(post => post.Team)
@@ -117,7 +117,7 @@ namespace TeamAceProject.Services
                 .Aggregate((a, b) => $"{a} {b}");
         }
 
-        public async Task<bool> DeletePostAsync(Guid postId)
+        public async Task<bool> DeletePostAsync(int postId)
         {
             Post? post = await _context.Posts.FindAsync(postId);
             if (post == null) return false;
@@ -126,7 +126,7 @@ namespace TeamAceProject.Services
             return true;
         }
 
-        public async Task<bool> EditPostAsync(EditPostInputModel input, Guid requestingUserId)
+        public async Task<bool> EditPostAsync(EditPostInputModel input, int requestingUserId)
         {
             Post? post = await _context.Posts.FindAsync(input.Id);
             if (post == null || post.UserId != requestingUserId) return false;
@@ -138,7 +138,6 @@ namespace TeamAceProject.Services
 
         public async Task<Post> CreatePostAsync(Post post)
         {
-            post.Id = Guid.NewGuid();
             post.CreatedAt = DateTime.UtcNow;
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
@@ -147,14 +146,13 @@ namespace TeamAceProject.Services
 
         public async Task<Comment> AddCommentAsync(Comment comment)
         {
-            comment.Id = Guid.NewGuid();
             comment.CreatedAt = DateTime.UtcNow;
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
             return comment;
         }
 
-        public async Task<bool> DeleteCommentAsync(Guid commentId, Guid requestingUserId)
+        public async Task<bool> DeleteCommentAsync(int commentId, int requestingUserId)
         {
             Comment? comment = await _context.Comments.FindAsync(commentId);
             if (comment == null || comment.UserId != requestingUserId) return false;
@@ -163,7 +161,7 @@ namespace TeamAceProject.Services
             return true;
         }
 
-        public async Task<Comment?> EditCommentAsync(Guid commentId, Guid requestingUserId, string body)
+        public async Task<Comment?> EditCommentAsync(int commentId, int requestingUserId, string body)
         {
             Comment? comment = await _context.Comments.FindAsync(commentId);
             if (comment == null || comment.UserId != requestingUserId) return null;
@@ -172,7 +170,7 @@ namespace TeamAceProject.Services
             return comment;
         }
 
-        public async Task<(int likes, int dislikes)> GetReactionCountsAsync(Guid postId)
+        public async Task<(int likes, int dislikes)> GetReactionCountsAsync(int postId)
         {
             var reactions = await _context.Reactions
                 .Where(r => r.PostId == postId)
@@ -183,7 +181,7 @@ namespace TeamAceProject.Services
             );
         }
 
-        public async Task<Reaction> AddOrUpdateReactionAsync(Guid postId, Guid userId, ReactionType reactionType)
+        public async Task<Reaction> AddOrUpdateReactionAsync(int postId, int userId, ReactionType reactionType)
         {
             Reaction? existingReaction = await _context.Reactions.FindAsync(postId, userId);
 

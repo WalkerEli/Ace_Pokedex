@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.Enums;
+﻿namespace TeamAceProject.Models.Enums;
 
 public enum ReactionType
 {

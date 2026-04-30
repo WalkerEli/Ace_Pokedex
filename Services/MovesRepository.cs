@@ -1,17 +1,17 @@
-using TeamAceProject.Infrastructure;
+﻿using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Moves;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class MovesService : IMovesService
+    public class MovesRepository : IMovesRepository
     {
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public MovesService(IPokeApiService pokeApiService)
+        public MovesRepository(IPokeApiRepository PokeApiRepository)
         {
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<MoveListPageViewModel> GetMovesPageAsync(int pageNumber, int pageSize, string? query = null)
@@ -24,7 +24,7 @@ namespace TeamAceProject.Services
             int fetchLimit = isSearch ? 2000 : safeSize;
             int fetchOffset = isSearch ? 0 : (safePage - 1) * safeSize;
 
-            PokemonListResponseDto? list = await _pokeApiService.GetMoveListAsync(fetchLimit, fetchOffset);
+            PokemonListResponseDto? list = await _pokeApiRepo.GetMoveListAsync(fetchLimit, fetchOffset);
 
             MoveListPageViewModel model = new MoveListPageViewModel
             {
@@ -49,7 +49,7 @@ namespace TeamAceProject.Services
 
             // Fetch details for this page in parallel to get type info.
             MoveDetailDto?[] details = await Task.WhenAll(
-                paged.Select(m => _pokeApiService.GetMoveByNameAsync(m.Name)));
+                paged.Select(m => _pokeApiRepo.GetMoveByNameAsync(m.Name)));
 
             foreach (MoveDetailDto? dto in details)
             {
@@ -68,7 +68,7 @@ namespace TeamAceProject.Services
 
         public async Task<MoveDetailViewModel?> GetMoveDetailsAsync(string name)
         {
-            MoveDetailDto? dto = await _pokeApiService.GetMoveByNameAsync(name);
+            MoveDetailDto? dto = await _pokeApiRepo.GetMoveByNameAsync(name);
             if (dto == null)
                 return null;
 

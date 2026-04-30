@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Auth;
@@ -7,12 +7,12 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class UserService : IUserService
+    public class DbUserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
+        public DbUserRepository(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
             _passwordHasher = passwordHasher;
@@ -30,7 +30,7 @@ namespace TeamAceProject.Services
                 .ToListAsync();
         }
 
-        public async Task<UserDetailsViewModel?> GetUserByIdAsync(Guid userId)
+        public async Task<UserDetailsViewModel?> GetUserByIdAsync(int userId)
         {
             return await _context.Users.AsNoTracking()
                 .Where(user => user.Id == userId)
@@ -74,7 +74,6 @@ namespace TeamAceProject.Services
 
             User user = new User
             {
-                Id = Guid.NewGuid(),
                 Username = normalizedUsername,
                 Email = normalizedEmail,
                 CreatedAt = DateTime.UtcNow,
@@ -114,7 +113,7 @@ namespace TeamAceProject.Services
             return user;
         }
 
-        public async Task<bool> SetFavoritePokemonAsync(Guid userId, int pokemonId, string pokemonName)
+        public async Task<bool> SetFavoritePokemonAsync(int userId, int pokemonId, string pokemonName)
         {
             User? user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -129,7 +128,7 @@ namespace TeamAceProject.Services
             return true;
         }
 
-        public async Task<bool> SetBioAsync(Guid userId, string bio)
+        public async Task<bool> SetBioAsync(int userId, string bio)
         {
             User? user = await _context.Users.FindAsync(userId);
             if (user == null) return false;

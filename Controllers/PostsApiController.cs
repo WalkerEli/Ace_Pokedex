@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Entities;
@@ -12,24 +12,24 @@ namespace TeamAceProject.Controllers
     [Route("api/[controller]")]
     public class PostsApiController : ControllerBase
     {
-        private readonly IPostService _postService;
+        private readonly IPostRepository _postRepo;
 
-        public PostsApiController(IPostService postService)
+        public PostsApiController(IPostRepository DbPostRepository)
         {
-            _postService = postService;
+            _postRepo = DbPostRepository;
         }
 
         // Adds or updates the current user's like/dislike and returns the new counts
         [Authorize]
         [HttpPost("react")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> React([FromForm] Guid postId, [FromForm] ReactionType type)
+        public async Task<IActionResult> React([FromForm] int postId, [FromForm] ReactionType type)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
-            await _postService.AddOrUpdateReactionAsync(postId, currentUserId.Value, type);
-            var (likes, dislikes) = await _postService.GetReactionCountsAsync(postId);
+            await _postRepo.AddOrUpdateReactionAsync(postId, currentUserId.Value, type);
+            var (likes, dislikes) = await _postRepo.GetReactionCountsAsync(postId);
             return Ok(new { likes, dislikes });
         }
 
@@ -37,9 +37,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost("add-comment")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment([FromForm] Guid postId, [FromForm] string body)
+        public async Task<IActionResult> AddComment([FromForm] int postId, [FromForm] string body)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             if (string.IsNullOrWhiteSpace(body))
@@ -52,7 +52,7 @@ namespace TeamAceProject.Controllers
                 Body = body.Trim(),
             };
 
-            Comment saved = await _postService.AddCommentAsync(comment);
+            Comment saved = await _postRepo.AddCommentAsync(comment);
             return Ok(new { username = User.Identity!.Name, body = saved.Body, createdAt = saved.CreatedAt.ToLocalTime().ToString("g") });
         }
 
@@ -60,12 +60,12 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteComment(Guid id)
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
-            bool deleted = await _postService.DeleteCommentAsync(id, currentUserId.Value);
+            bool deleted = await _postRepo.DeleteCommentAsync(id, currentUserId.Value);
             if (!deleted) return Forbid();
 
             return Ok(new { success = true });
@@ -75,15 +75,15 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditComment(Guid id, [FromForm] string body)
+        public async Task<IActionResult> EditComment(int id, [FromForm] string body)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             if (string.IsNullOrWhiteSpace(body))
                 return BadRequest(new { error = "Comment cannot be empty." });
 
-            Comment? updated = await _postService.EditCommentAsync(id, currentUserId.Value, body);
+            Comment? updated = await _postRepo.EditCommentAsync(id, currentUserId.Value, body);
             if (updated == null) return Forbid();
 
             return Ok(new { body = updated.Body });

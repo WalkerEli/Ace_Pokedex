@@ -1,4 +1,4 @@
-namespace TeamAceProject.Infrastructure
+﻿namespace TeamAceProject.Infrastructure
 {
     public static class TypeChart
     {

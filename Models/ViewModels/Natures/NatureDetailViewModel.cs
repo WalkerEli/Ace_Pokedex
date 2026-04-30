@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Natures
+﻿namespace TeamAceProject.Models.ViewModels.Natures
 {
     public class NatureDetailViewModel
     {

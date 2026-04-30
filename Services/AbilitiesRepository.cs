@@ -1,17 +1,17 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Abilities;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class AbilitiesService : IAbilitiesService
+    public class AbilitiesRepository : IAbilitiesRepository
     {
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public AbilitiesService(IPokeApiService pokeApiService)
+        public AbilitiesRepository(IPokeApiRepository PokeApiRepository)
         {
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<AbilityListPageViewModel> GetAbilitiesPageAsync(int pageNumber, int pageSize, string? query = null)
@@ -23,7 +23,7 @@ namespace TeamAceProject.Services
             int fetchLimit = isSearch ? 2000 : safeSize;
             int fetchOffset = isSearch ? 0 : (safePage - 1) * safeSize;
 
-            PokemonListResponseDto? list = await _pokeApiService.GetAbilityListAsync(fetchLimit, fetchOffset);
+            PokemonListResponseDto? list = await _pokeApiRepo.GetAbilityListAsync(fetchLimit, fetchOffset);
 
             AbilityListPageViewModel model = new AbilityListPageViewModel
             {
@@ -59,7 +59,7 @@ namespace TeamAceProject.Services
 
         public async Task<AbilityDetailViewModel?> GetAbilityDetailsAsync(string name)
         {
-            AbilityDetailDto? dto = await _pokeApiService.GetAbilityByNameAsync(name);
+            AbilityDetailDto? dto = await _pokeApiRepo.GetAbilityByNameAsync(name);
             if (dto == null)
                 return null;
 

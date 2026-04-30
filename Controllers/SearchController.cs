@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Models.ViewModels.Pokemon;
 using TeamAceProject.Services.Interfaces;
 
@@ -6,11 +6,11 @@ namespace TeamAceProject.Controllers;
 
 public class SearchController : Controller
 {
-    private readonly IPokemonService _pokemonService;
+    private readonly IPokemonRepository _pokemonRepo;
 
-    public SearchController(IPokemonService pokemonService)
+    public SearchController(IPokemonRepository PokemonRepository)
     {
-        _pokemonService = pokemonService;
+        _pokemonRepo = PokemonRepository;
     }
 
     [HttpGet]
@@ -19,7 +19,7 @@ public class SearchController : Controller
         if (string.IsNullOrWhiteSpace(query))
             return View(new List<PokemonListItemViewModel>());
 
-        List<PokemonListItemViewModel> results = await _pokemonService.SearchPokemonAsync(query);
+        List<PokemonListItemViewModel> results = await _pokemonRepo.SearchPokemonAsync(query);
         ViewData["Query"] = query;
         return View(results);
     }

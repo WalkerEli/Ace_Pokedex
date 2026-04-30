@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Models.ViewModels.Items;
 using TeamAceProject.Services.Interfaces;
 
@@ -6,17 +6,17 @@ namespace TeamAceProject.Controllers
 {
     public class ItemsController : Controller
     {
-        private readonly IItemService _itemService;
+        private readonly IItemRepository _itemRepo;
 
-        public ItemsController(IItemService itemService)
+        public ItemsController(IItemRepository ItemRepository)
         {
-            _itemService = itemService;
+            _itemRepo = ItemRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 24, string? query = null)
         {
-            ItemListPageViewModel model = await _itemService.GetHeldItemsPageAsync(page, pageSize, query);
+            ItemListPageViewModel model = await _itemRepo.GetHeldItemsPageAsync(page, pageSize, query);
             return View(model);
         }
 
@@ -26,7 +26,7 @@ namespace TeamAceProject.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return NotFound();
 
-            ItemDetailViewModel? model = await _itemService.GetItemDetailsAsync(name);
+            ItemDetailViewModel? model = await _itemRepo.GetItemDetailsAsync(name);
             if (model == null)
                 return NotFound();
 

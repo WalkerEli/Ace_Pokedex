@@ -1,14 +1,28 @@
-@model TeamAceProject.Models.ViewModels.Teams.TeamDetailsViewModel
+﻿@model TeamAceProject.Models.ViewModels.Teams.TeamDetailsViewModel
 @using System.Security.Claims
+@using TeamAceProject.Infrastructure
 @{
     ViewData["Title"] = Model.Name;
-    Guid? currentUserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var _uid) ? _uid : (Guid?)null;
+    int? currentUserId = User.GetCurrentUserId();
     bool isOwner = currentUserId.HasValue && currentUserId.Value == Model.UserId;
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div>
-        <h1 class="mb-1">@Model.Name</h1>
+        @if (isOwner)
+        {
+            <form asp-action="Rename" method="post" class="d-flex align-items-center gap-2 mb-1">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="teamId" value="@Model.Id" />
+                <input type="text" name="name" value="@Model.Name" class="form-control form-control-lg fw-bold"
+                       style="max-width:320px;" required />
+                <button type="submit" class="btn btn-outline-secondary btn-sm">rename</button>
+            </form>
+        }
+        else
+        {
+            <h1 class="mb-1">@Model.Name</h1>
+        }
         <p class="text-muted mb-1">owner: @Model.Username</p>
         <span class="badge @(Model.IsPublic ? "text-bg-success" : "text-bg-secondary")">@(Model.IsPublic ? "public" : "private")</span>
     </div>

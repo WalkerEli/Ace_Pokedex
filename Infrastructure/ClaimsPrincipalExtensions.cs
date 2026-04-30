@@ -1,12 +1,12 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace TeamAceProject.Infrastructure;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static Guid? GetCurrentUserId(this ClaimsPrincipal principal)
+    public static int? GetCurrentUserId(this ClaimsPrincipal principal)
     {
         string? value = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Guid.TryParse(value, out Guid userId) ? userId : null;
+        return int.TryParse(value, out int userId) ? userId : null;
     }
 }

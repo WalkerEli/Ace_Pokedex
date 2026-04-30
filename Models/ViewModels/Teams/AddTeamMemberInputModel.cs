@@ -1,10 +1,10 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TeamAceProject.Models.ViewModels.Teams
 {
     public class AddTeamMemberInputModel
     {
-        public Guid TeamId { get; set; }
+        public int TeamId { get; set; }
 
         [Required]
         [StringLength(100)]

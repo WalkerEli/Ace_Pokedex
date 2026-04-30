@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Data;
@@ -25,16 +25,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<IItemService, ItemService>();
-builder.Services.AddScoped<IMovesService, MovesService>();
-builder.Services.AddScoped<IAbilitiesService, AbilitiesService>();
-builder.Services.AddScoped<INaturesService, NaturesService>();
-builder.Services.AddScoped<IPokemonService, PokemonService>();
-builder.Services.AddScoped<IPostService, PostService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITeamRepository, DbTeamRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IMovesRepository, MovesRepository>();
+builder.Services.AddScoped<IAbilitiesRepository, AbilitiesRepository>();
+builder.Services.AddScoped<INaturesRepository, NaturesRepository>();
+builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+builder.Services.AddScoped<IPostRepository, DbPostRepository>();
+builder.Services.AddScoped<IUserRepository, DbUserRepository>();
 
-builder.Services.AddHttpClient<IPokeApiService, PokeApiService>(client =>
+builder.Services.AddHttpClient<IPokeApiRepository, PokeApiRepository>(client =>
 {
     client.BaseAddress = new Uri("https://pokeapi.co/api/v2/");
     client.Timeout = TimeSpan.FromSeconds(15);

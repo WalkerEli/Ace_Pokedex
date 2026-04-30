@@ -1,9 +1,10 @@
-@model TeamAceProject.Models.ViewModels.Posts.PostDetailsViewModel
+﻿@model TeamAceProject.Models.ViewModels.Posts.PostDetailsViewModel
 @using TeamAceProject.Models.Enums
 @using System.Security.Claims
+@using TeamAceProject.Infrastructure
 @{
     ViewData["Title"] = "Post";
-    Guid? currentUserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var _uid) ? _uid : (Guid?)null;
+    int? currentUserId = User.GetCurrentUserId();
     bool isOwner = currentUserId.HasValue && currentUserId.Value == Model.UserId;
 }
 
