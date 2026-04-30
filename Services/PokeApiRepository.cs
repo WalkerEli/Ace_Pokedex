@@ -73,6 +73,11 @@ namespace TeamAceProject.Services
             return GetAsync<ItemAttributeDto>($"item-attribute/{NormalizeKey(name)}");
         }
 
+        public Task<TypeDetailDto?> GetTypeByNameAsync(string name)
+        {
+            return GetAsync<TypeDetailDto>($"type/{NormalizeKey(name)}");
+        }
+
         private async Task<T?> GetAsync<T>(string relativeUrl)
         {
             if (_cache.TryGetValue(relativeUrl, out T? cachedResult))

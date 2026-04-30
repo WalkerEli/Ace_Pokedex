@@ -15,5 +15,6 @@ namespace TeamAceProject.Services.Interfaces
         Task<ItemDetailDto?> GetItemByNameAsync(string name);
         Task<PokemonListResponseDto?> GetNatureListAsync();
         Task<ItemAttributeDto?> GetItemAttributeAsync(string name);
+        Task<TypeDetailDto?> GetTypeByNameAsync(string name);
     }
 }
