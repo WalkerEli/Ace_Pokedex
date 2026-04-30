@@ -1,21 +1,21 @@
-using TeamAceProject.Models.Dtos.PokeApi;
+﻿using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Natures;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class NaturesService : INaturesService
+    public class NaturesRepository : INaturesRepository
     {
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public NaturesService(IPokeApiService pokeApiService)
+        public NaturesRepository(IPokeApiRepository PokeApiRepository)
         {
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<NatureListViewModel> GetAllNaturesAsync(string? query = null)
         {
-            PokemonListResponseDto? list = await _pokeApiService.GetNatureListAsync();
+            PokemonListResponseDto? list = await _pokeApiRepo.GetNatureListAsync();
 
             NatureListViewModel model = new NatureListViewModel { Query = query };
 
@@ -32,7 +32,7 @@ namespace TeamAceProject.Services
 
             // Fetch all nature details in parallel (only 25 total, heavily cached).
             NatureDetailDto?[] details = await Task.WhenAll(
-                results.Select(n => _pokeApiService.GetNatureByNameAsync(n.Name)));
+                results.Select(n => _pokeApiRepo.GetNatureByNameAsync(n.Name)));
 
             foreach (NatureDetailDto? dto in details)
             {
@@ -51,7 +51,7 @@ namespace TeamAceProject.Services
 
         public async Task<NatureDetailViewModel?> GetNatureDetailsAsync(string name)
         {
-            NatureDetailDto? dto = await _pokeApiService.GetNatureByNameAsync(name);
+            NatureDetailDto? dto = await _pokeApiRepo.GetNatureByNameAsync(name);
             if (dto == null)
                 return null;
 

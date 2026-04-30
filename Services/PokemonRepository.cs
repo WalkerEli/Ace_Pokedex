@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Models.ViewModels.Pokemon;
@@ -6,13 +6,13 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class PokemonService : IPokemonService
+    public class PokemonRepository : IPokemonRepository
     {
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public PokemonService(IPokeApiService pokeApiService)
+        public PokemonRepository(IPokeApiRepository PokeApiRepository)
         {
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<PokemonListPageViewModel> GetPokemonPageAsync(int pageNumber, int pageSize)
@@ -21,7 +21,7 @@ namespace TeamAceProject.Services
             int safePageSize = Math.Clamp(pageSize, 1, 60);
             int offset = (safePageNumber - 1) * safePageSize;
 
-            PokemonListResponseDto? response = await _pokeApiService.GetPokemonListAsync(safePageSize, offset);
+            PokemonListResponseDto? response = await _pokeApiRepo.GetPokemonListAsync(safePageSize, offset);
 
             PokemonListPageViewModel model = new PokemonListPageViewModel
             {
@@ -92,7 +92,7 @@ namespace TeamAceProject.Services
         public async Task<List<PokemonListItemViewModel>> SearchPokemonAsync(string query)
         {
             string normalized = query.Trim().ToLowerInvariant().Replace(' ', '-');
-            PokemonListResponseDto? all = await _pokeApiService.GetPokemonListAsync(2000, 0);
+            PokemonListResponseDto? all = await _pokeApiRepo.GetPokemonListAsync(2000, 0);
 
             if (all == null)
                 return new List<PokemonListItemViewModel>();
@@ -113,10 +113,10 @@ namespace TeamAceProject.Services
         {
             if (int.TryParse(nameOrId, out int id))
             {
-                return await _pokeApiService.GetPokemonByIdAsync(id);
+                return await _pokeApiRepo.GetPokemonByIdAsync(id);
             }
 
-            return await _pokeApiService.GetPokemonByNameAsync(nameOrId);
+            return await _pokeApiRepo.GetPokemonByNameAsync(nameOrId);
         }
 
         private static int ExtractIdFromUrl(string url)

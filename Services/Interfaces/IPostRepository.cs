@@ -1,10 +1,10 @@
-using TeamAceProject.Models.Entities;
+﻿using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.Enums;
 using TeamAceProject.Models.ViewModels.Posts;
 
 namespace TeamAceProject.Services.Interfaces
 {
-    public interface IPostService
+    public interface IPostRepository
     {
         Task<List<PostListItemViewModel>> GetAllPostsAsync();
         Task<PostDetailsViewModel?> GetPostByIdAsync(Guid postId);

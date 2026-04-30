@@ -1,9 +1,9 @@
-using TeamAceProject.Models.Entities;
+﻿using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Teams;
 
 namespace TeamAceProject.Services.Interfaces
 {
-    public interface ITeamService
+    public interface ITeamRepository
     {
         Task<List<TeamListItemViewModel>> GetAllTeamsAsync();
         Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(Guid userId);

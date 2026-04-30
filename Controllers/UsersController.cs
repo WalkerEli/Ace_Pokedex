@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Infrastructure;
 using TeamAceProject.Services.Interfaces;
@@ -8,18 +8,18 @@ namespace TeamAceProject.Controllers
     // Handles user profile viewing and profile updates
     public class UsersController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepo;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserRepository DbUserRepository)
         {
-            _userService = userService;
+            _userRepo = DbUserRepository;
         }
 
         // Shows the public profile page for any user by their ID
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            var user = await _userRepo.GetUserByIdAsync(id);
 
             if (user == null)
             {
@@ -53,7 +53,7 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue || currentUserId.Value != userId)
                 return Forbid();
 
-            await _userService.SetBioAsync(userId, bio ?? string.Empty);
+            await _userRepo.SetBioAsync(userId, bio ?? string.Empty);
             return RedirectToAction(nameof(Details), new { id = userId });
         }
 
@@ -69,7 +69,7 @@ namespace TeamAceProject.Controllers
                 return Forbid();
             }
 
-            bool updated = await _userService.SetFavoritePokemonAsync(userId, pokemonId, pokemonName);
+            bool updated = await _userRepo.SetFavoritePokemonAsync(userId, pokemonId, pokemonName);
 
             if (!updated)
             {

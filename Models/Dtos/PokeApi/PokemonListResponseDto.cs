@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.Dtos.PokeApi
+﻿namespace TeamAceProject.Models.Dtos.PokeApi
 {
     public class PokemonListResponseDto
     {

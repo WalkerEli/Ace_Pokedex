@@ -1,8 +1,8 @@
-using TeamAceProject.Models.ViewModels.Natures;
+﻿using TeamAceProject.Models.ViewModels.Natures;
 
 namespace TeamAceProject.Services.Interfaces
 {
-    public interface INaturesService
+    public interface INaturesRepository
     {
         Task<NatureListViewModel> GetAllNaturesAsync(string? query = null);
         Task<NatureDetailViewModel?> GetNatureDetailsAsync(string name);

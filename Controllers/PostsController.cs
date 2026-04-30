@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Infrastructure;
 using TeamAceProject.Models.Entities;
@@ -10,18 +10,18 @@ namespace TeamAceProject.Controllers
     // Handles the MVC post feed — list, details, create, edit, and delete
     public class PostsController : Controller
     {
-        private readonly IPostService _postService;
+        private readonly IPostRepository _postRepo;
 
-        public PostsController(IPostService postService)
+        public PostsController(IPostRepository DbPostRepository)
         {
-            _postService = postService;
+            _postRepo = DbPostRepository;
         }
 
         // Shows all posts in reverse chronological order
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var posts = await _postService.GetAllPostsAsync();
+            var posts = await _postRepo.GetAllPostsAsync();
             return View(posts);
         }
 
@@ -29,7 +29,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postRepo.GetPostByIdAsync(id);
 
             if (post == null)
             {
@@ -81,7 +81,7 @@ namespace TeamAceProject.Controllers
             if (!ModelState.IsValid)
                 return View(post);
 
-            Post createdPost = await _postService.CreatePostAsync(post);
+            Post createdPost = await _postRepo.CreatePostAsync(post);
             return RedirectToAction(nameof(Details), new { id = createdPost.Id });
         }
 
@@ -94,7 +94,7 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postRepo.GetPostByIdAsync(id);
             if (post == null) return NotFound();
             if (post.UserId != currentUserId.Value) return Forbid();
 
@@ -124,7 +124,7 @@ namespace TeamAceProject.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            bool success = await _postService.EditPostAsync(input, currentUserId.Value);
+            bool success = await _postRepo.EditPostAsync(input, currentUserId.Value);
             if (!success) return Forbid();
 
             return RedirectToAction(nameof(Details), new { id = input.Id });
@@ -135,7 +135,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postRepo.GetPostByIdAsync(id);
             if (post == null) return NotFound();
             return View(post);
         }
@@ -150,11 +150,11 @@ namespace TeamAceProject.Controllers
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postRepo.GetPostByIdAsync(id);
             if (post == null) return NotFound();
             if (post.UserId != currentUserId.Value) return Forbid();
 
-            await _postService.DeletePostAsync(id);
+            await _postRepo.DeletePostAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

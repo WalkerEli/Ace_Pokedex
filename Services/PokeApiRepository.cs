@@ -1,17 +1,17 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using TeamAceProject.Models.Dtos.PokeApi;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class PokeApiService : IPokeApiService
+    public class PokeApiRepository : IPokeApiRepository
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public PokeApiService(HttpClient httpClient, IMemoryCache cache)
+        public PokeApiRepository(HttpClient httpClient, IMemoryCache cache)
         {
             _httpClient = httpClient;
             _cache = cache;

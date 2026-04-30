@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Posts
+﻿namespace TeamAceProject.Models.ViewModels.Posts
 {
     public class PostListItemViewModel
     {

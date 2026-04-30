@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Teams
+﻿namespace TeamAceProject.Models.ViewModels.Teams
 {
     public class TeamListItemViewModel
     {

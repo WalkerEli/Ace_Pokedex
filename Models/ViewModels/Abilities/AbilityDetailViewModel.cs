@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Abilities
+﻿namespace TeamAceProject.Models.ViewModels.Abilities
 {
     public class AbilityDetailViewModel
     {

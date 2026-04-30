@@ -1,10 +1,10 @@
-using TeamAceProject.Models.Entities;
+﻿using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Auth;
 using TeamAceProject.Models.ViewModels.Users;
 
 namespace TeamAceProject.Services.Interfaces
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         Task<List<UserSummaryViewModel>> GetAllUsersAsync();
         Task<UserDetailsViewModel?> GetUserByIdAsync(Guid userId);

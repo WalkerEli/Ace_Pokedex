@@ -1,19 +1,19 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Teams;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class TeamService : ITeamService
+    public class DbTeamRepository : ITeamRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IPokeApiService _pokeApiService;
+        private readonly IPokeApiRepository _pokeApiRepo;
 
-        public TeamService(ApplicationDbContext context, IPokeApiService pokeApiService)
+        public DbTeamRepository(ApplicationDbContext context, IPokeApiRepository PokeApiRepository)
         {
             _context = context;
-            _pokeApiService = pokeApiService;
+            _pokeApiRepo = PokeApiRepository;
         }
 
         public async Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(Guid userId)
@@ -159,7 +159,7 @@ namespace TeamAceProject.Services
             }
 
             string normalizedPokemonName = NormalizeApiName(input.PokemonName);
-            var pokemon = await _pokeApiService.GetPokemonByNameAsync(normalizedPokemonName);
+            var pokemon = await _pokeApiRepo.GetPokemonByNameAsync(normalizedPokemonName);
             if (pokemon == null)
             {
                 throw new InvalidOperationException("Pokemon not found in PokeAPI.");
@@ -241,7 +241,7 @@ namespace TeamAceProject.Services
                 throw new InvalidOperationException("Team member not found.");
 
             string normalizedPokemonName = NormalizeApiName(input.PokemonName);
-            var pokemon = await _pokeApiService.GetPokemonByNameAsync(normalizedPokemonName);
+            var pokemon = await _pokeApiRepo.GetPokemonByNameAsync(normalizedPokemonName);
             if (pokemon == null)
                 throw new InvalidOperationException("Pokemon not found in PokeAPI.");
 

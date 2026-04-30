@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models;
+﻿namespace TeamAceProject.Models;
 
 public class ErrorViewModel
 {

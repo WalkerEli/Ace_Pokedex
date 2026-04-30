@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +11,11 @@ namespace TeamAceProject.Controllers;
 // Handles user registration, login, and logout using cookie authentication
 public class AccountController : Controller
 {
-    private readonly IUserService _userService;
+    private readonly IUserRepository _userRepo;
 
-    public AccountController(IUserService userService)
+    public AccountController(IUserRepository DbUserRepository)
     {
-        _userService = userService;
+        _userRepo = DbUserRepository;
     }
 
     // Shows the registration form, redirects home if already logged in
@@ -40,7 +40,7 @@ public class AccountController : Controller
             return View(input);
         }
 
-        User? user = await _userService.RegisterUserAsync(input);
+        User? user = await _userRepo.RegisterUserAsync(input);
         if (user == null)
         {
             ModelState.AddModelError(string.Empty, "That username or email is already in use.");
@@ -73,7 +73,7 @@ public class AccountController : Controller
             return View(input);
         }
 
-        User? user = await _userService.AuthenticateUserAsync(input.UsernameOrEmail, input.Password);
+        User? user = await _userRepo.AuthenticateUserAsync(input.UsernameOrEmail, input.Password);
         if (user == null)
         {
             ModelState.AddModelError(string.Empty, "Invalid username/email or password.");

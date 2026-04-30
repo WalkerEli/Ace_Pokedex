@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Users
+﻿namespace TeamAceProject.Models.ViewModels.Users
 {
     public class UserSummaryViewModel
     {

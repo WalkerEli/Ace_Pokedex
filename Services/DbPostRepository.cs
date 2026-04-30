@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.Enums;
 using TeamAceProject.Models.ViewModels.Posts;
@@ -6,11 +6,11 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class PostService : IPostService
+    public class DbPostRepository : IPostRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public PostService(ApplicationDbContext context)
+        public DbPostRepository(ApplicationDbContext context)
         {
             _context = context;
         }

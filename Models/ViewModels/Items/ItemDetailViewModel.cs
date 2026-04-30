@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Items
+﻿namespace TeamAceProject.Models.ViewModels.Items
 {
     public class ItemDetailViewModel
     {

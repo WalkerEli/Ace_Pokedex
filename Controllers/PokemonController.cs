@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers
@@ -6,18 +6,18 @@ namespace TeamAceProject.Controllers
     // Fetches and displays Pokemon data sourced live from PokeAPI
     public class PokemonController : Controller
     {
-        private readonly IPokemonService _pokemonService;
+        private readonly IPokemonRepository _pokemonRepo;
 
-        public PokemonController(IPokemonService pokemonService)
+        public PokemonController(IPokemonRepository PokemonRepository)
         {
-            _pokemonService = pokemonService;
+            _pokemonRepo = PokemonRepository;
         }
 
         // Returns a paginated list of Pokemon
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 24)
         {
-            var model = await _pokemonService.GetPokemonPageAsync(page, pageSize);
+            var model = await _pokemonRepo.GetPokemonPageAsync(page, pageSize);
             return View(model);
         }
 
@@ -25,7 +25,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            var pokemon = await _pokemonService.GetPokemonDetailsAsync(id);
+            var pokemon = await _pokemonRepo.GetPokemonDetailsAsync(id);
 
             if (pokemon == null)
             {

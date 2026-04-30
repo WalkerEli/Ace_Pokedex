@@ -1,4 +1,4 @@
-namespace TeamAceProject.Models.ViewModels.Pokemon
+﻿namespace TeamAceProject.Models.ViewModels.Pokemon
 {
     public class PokemonDetailViewModel
     {

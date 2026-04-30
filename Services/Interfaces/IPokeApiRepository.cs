@@ -1,8 +1,8 @@
-using TeamAceProject.Models.Dtos.PokeApi;
+﻿using TeamAceProject.Models.Dtos.PokeApi;
 
 namespace TeamAceProject.Services.Interfaces
 {
-    public interface IPokeApiService
+    public interface IPokeApiRepository
     {
         Task<PokemonListResponseDto?> GetPokemonListAsync(int limit, int offset);
         Task<PokemonListResponseDto?> GetMoveListAsync(int limit, int offset);

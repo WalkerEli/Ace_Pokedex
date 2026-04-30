@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeamAceProject.Models.Entities;
 using TeamAceProject.Models.ViewModels.Auth;
@@ -7,12 +7,12 @@ using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Services
 {
-    public class UserService : IUserService
+    public class DbUserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
+        public DbUserRepository(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
             _passwordHasher = passwordHasher;
