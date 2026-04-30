@@ -23,7 +23,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> UserTeams()
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return Json(new List<object>());
 
@@ -35,7 +35,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             var teams = currentUserId.HasValue
                 ? await _teamRepo.GetTeamsByUserAsync(currentUserId.Value)
                 : await _teamRepo.GetAllTeamsAsync();
@@ -44,7 +44,7 @@ namespace TeamAceProject.Controllers
 
         // Shows a single team with all its members
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(int id)
         {
             var team = await _teamRepo.GetTeamByIdAsync(id);
 
@@ -61,7 +61,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
 
             if (!currentUserId.HasValue)
             {
@@ -80,7 +80,7 @@ namespace TeamAceProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Team team)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
 
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
@@ -101,7 +101,7 @@ namespace TeamAceProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMember(AddTeamMemberInputModel input)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
@@ -134,7 +134,7 @@ namespace TeamAceProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMember(EditTeamMemberInputModel input)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
@@ -165,9 +165,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveMember(Guid teamId, Guid teamMemberId)
+        public async Task<IActionResult> RemoveMember(int teamId, int teamMemberId)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
@@ -183,10 +183,35 @@ namespace TeamAceProject.Controllers
             return RedirectToAction(nameof(Details), new { id = teamId });
         }
 
+        // Renames a team after confirming ownership
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rename(int teamId, string name)
+        {
+            int? currentUserId = User.GetCurrentUserId();
+            if (!currentUserId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var ownerId = await _teamRepo.GetTeamOwnerIdAsync(teamId);
+            if (ownerId == null || ownerId != currentUserId.Value)
+                return Forbid();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                TempData["TeamError"] = "Team name cannot be empty.";
+                return RedirectToAction(nameof(Details), new { id = teamId });
+            }
+
+            await _teamRepo.RenameTeamAsync(teamId, name);
+            TempData["TeamSuccess"] = "Team name updated.";
+            return RedirectToAction(nameof(Details), new { id = teamId });
+        }
+
         // Shows a confirmation page before deleting the team
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             var team = await _teamRepo.GetTeamByIdAsync(id);
             if (team == null) return NotFound();
@@ -197,9 +222,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 

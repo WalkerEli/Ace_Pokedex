@@ -4,9 +4,9 @@ namespace TeamAceProject.Models.Entities;
 
 public class TeamMemberMove
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid TeamMemberId { get; set; }
+    public int TeamMemberId { get; set; }
 
     [Range(1, 4)]
     public int MoveSlot { get; set; }

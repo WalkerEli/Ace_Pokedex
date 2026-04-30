@@ -2,9 +2,9 @@
 {
     public class PostDetailsViewModel
     {
-        public Guid Id { get; set; }
-        public Guid TeamId { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
+        public int TeamId { get; set; }
+        public int UserId { get; set; }
         public string Caption { get; set; } = string.Empty;
         public string TeamName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
@@ -29,8 +29,8 @@
 
     public class PostCommentViewModel
     {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

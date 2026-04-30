@@ -4,11 +4,11 @@ namespace TeamAceProject.Models.Entities;
 
 public class Post
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid TeamId { get; set; }
+    public int TeamId { get; set; }
 
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

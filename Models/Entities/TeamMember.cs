@@ -4,9 +4,9 @@ namespace TeamAceProject.Models.Entities;
 
 public class TeamMember
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid TeamId { get; set; }
+    public int TeamId { get; set; }
 
     [Range(1, 6)]
     public int SlotIndex { get; set; }

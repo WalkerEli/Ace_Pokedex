@@ -27,7 +27,7 @@ namespace TeamAceProject.Controllers
 
         // Shows a single post with its team roster, reactions, and comments
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(int id)
         {
             var post = await _postRepo.GetPostByIdAsync(id);
 
@@ -42,9 +42,9 @@ namespace TeamAceProject.Controllers
         // Shows the create post form, optionally pre-selecting a team via query string
         [Authorize]
         [HttpGet]
-        public IActionResult Create(Guid? teamId)
+        public IActionResult Create(int? teamId)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
             {
                 return RedirectToAction("Login", "Account");
@@ -52,7 +52,7 @@ namespace TeamAceProject.Controllers
 
             Post post = new Post
             {
-                TeamId = teamId ?? Guid.Empty,
+                TeamId = teamId ?? 0,
                 UserId = currentUserId.Value,
             };
 
@@ -65,7 +65,7 @@ namespace TeamAceProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
@@ -75,7 +75,7 @@ namespace TeamAceProject.Controllers
             ModelState.Remove(nameof(Post.UserId));
             ModelState.Remove(nameof(Post.TeamId));
 
-            if (post.TeamId == Guid.Empty)
+            if (post.TeamId == 0)
                 ModelState.AddModelError(nameof(Post.TeamId), "Please select a team.");
 
             if (!ModelState.IsValid)
@@ -88,9 +88,9 @@ namespace TeamAceProject.Controllers
         // Shows the edit post form pre-filled with the current team and caption
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(int id)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
@@ -114,11 +114,11 @@ namespace TeamAceProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditPostInputModel input)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            if (input.TeamId == Guid.Empty)
+            if (input.TeamId == 0)
                 ModelState.AddModelError(nameof(EditPostInputModel.TeamId), "Please select a team.");
 
             if (!ModelState.IsValid)
@@ -133,7 +133,7 @@ namespace TeamAceProject.Controllers
         // Shows a confirmation page before deleting the post
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             var post = await _postRepo.GetPostByIdAsync(id);
             if (post == null) return NotFound();
@@ -144,9 +144,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return RedirectToAction("Login", "Account");
 

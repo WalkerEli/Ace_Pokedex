@@ -4,9 +4,9 @@ namespace TeamAceProject.Models.Entities;
 
 public class Team
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     [Required]
     [StringLength(100)]

@@ -11,8 +11,8 @@ using TeamAceProject.Services;
 namespace TeamAceProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260427180130_AddPokemonTypesToTeamMember")]
-    partial class AddPokemonTypesToTeamMember
+    [Migration("20260430131418_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,9 +22,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.Comment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -34,11 +34,11 @@ namespace TeamAceProject.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -51,9 +51,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.Post", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Caption")
                         .IsRequired()
@@ -63,11 +63,11 @@ namespace TeamAceProject.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TeamId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -80,11 +80,11 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.Reaction", b =>
                 {
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -101,9 +101,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.Team", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -119,8 +119,8 @@ namespace TeamAceProject.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -131,9 +131,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.TeamMember", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AbilityName")
                         .HasMaxLength(100)
@@ -166,8 +166,8 @@ namespace TeamAceProject.Migrations
                     b.Property<int>("SlotIndex")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TeamId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -179,9 +179,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.TeamMemberMove", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("MoveName")
                         .IsRequired()
@@ -191,8 +191,8 @@ namespace TeamAceProject.Migrations
                     b.Property<int>("MoveSlot")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("TeamMemberId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TeamMemberId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -204,9 +204,9 @@ namespace TeamAceProject.Migrations
 
             modelBuilder.Entity("TeamAceProject.Models.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Bio")
                         .HasMaxLength(500)

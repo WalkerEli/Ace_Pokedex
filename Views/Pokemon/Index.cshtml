@@ -1,4 +1,4 @@
-@model TeamAceProject.Models.ViewModels.Pokemon.PokemonListPageViewModel
+﻿@model TeamAceProject.Models.ViewModels.Pokemon.PokemonListPageViewModel
 @{
     ViewData["Title"] = "Pokemon";
 }
@@ -7,13 +7,24 @@
     <div>
         <h1 class="mb-1">Pokemon</h1>
     </div>
-    <form asp-controller="Search" asp-action="Index" method="get" class="d-flex gap-2">
-        <input type="text" name="query" class="form-control" placeholder="search by name" />
-        <button class="btn btn-primary" type="submit">search</button>
-    </form>
+    <div class="d-flex gap-2 align-items-center">
+        <form asp-controller="Pokemon" asp-action="Index" method="get" class="d-flex gap-2"
+              onsubmit="return document.getElementById('pokemon-search').value.trim() !== ''">
+            <input type="text" id="pokemon-search" name="query" value="@Model.Query" class="form-control" placeholder="search by name" />
+            <button class="btn btn-primary" type="submit">search</button>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(Model.Query))
+        {
+            <a asp-controller="Pokemon" asp-action="Index" class="btn btn-outline-secondary">back</a>
+        }
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
+    @if (!Model.Pokemon.Any())
+    {
+        <p class="text-muted">Pokemon was not found.</p>
+    }
     @foreach (var pokemon in Model.Pokemon)
     {
         <div class="col-sm-6 col-md-4 col-lg-3">

@@ -1,9 +1,13 @@
-@model TeamAceProject.Models.ViewModels.Pokemon.PokemonDetailViewModel
+﻿@model TeamAceProject.Models.ViewModels.Pokemon.PokemonDetailViewModel
 @using TeamAceProject.Infrastructure
 @{
     ViewData["Title"] = Model.DisplayName;
-    Guid? currentUserId = User.GetCurrentUserId();
+    int? currentUserId = User.GetCurrentUserId();
 }
+
+<div class="d-flex justify-content-end mb-3">
+    <a asp-controller="Pokemon" asp-action="Index" class="btn btn-outline-secondary">back to pokemon</a>
+</div>
 
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div>

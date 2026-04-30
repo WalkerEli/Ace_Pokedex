@@ -4,7 +4,7 @@ namespace TeamAceProject.Models.Entities;
 
 public class User
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(50)]

@@ -4,7 +4,7 @@ namespace TeamAceProject.Models.ViewModels.Teams
 {
     public class AddTeamMemberInputModel
     {
-        public Guid TeamId { get; set; }
+        public int TeamId { get; set; }
 
         [Required]
         [StringLength(100)]

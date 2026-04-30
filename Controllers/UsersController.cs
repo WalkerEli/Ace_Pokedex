@@ -17,7 +17,7 @@ namespace TeamAceProject.Controllers
 
         // Shows the public profile page for any user by their ID
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(int id)
         {
             var user = await _userRepo.GetUserByIdAsync(id);
 
@@ -34,7 +34,7 @@ namespace TeamAceProject.Controllers
         [HttpGet]
         public IActionResult Me()
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue)
             {
                 return RedirectToAction("Login", "Account");
@@ -47,9 +47,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetBio(Guid userId, string bio)
+        public async Task<IActionResult> SetBio(int userId, string bio)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue || currentUserId.Value != userId)
                 return Forbid();
 
@@ -61,9 +61,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FavoritePokemon(Guid userId, int pokemonId, string pokemonName)
+        public async Task<IActionResult> FavoritePokemon(int userId, int pokemonId, string pokemonName)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue || currentUserId.Value != userId)
             {
                 return Forbid();

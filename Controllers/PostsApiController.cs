@@ -23,9 +23,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost("react")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> React([FromForm] Guid postId, [FromForm] ReactionType type)
+        public async Task<IActionResult> React([FromForm] int postId, [FromForm] ReactionType type)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             await _postRepo.AddOrUpdateReactionAsync(postId, currentUserId.Value, type);
@@ -37,9 +37,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPost("add-comment")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment([FromForm] Guid postId, [FromForm] string body)
+        public async Task<IActionResult> AddComment([FromForm] int postId, [FromForm] string body)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             if (string.IsNullOrWhiteSpace(body))
@@ -60,9 +60,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteComment(Guid id)
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             bool deleted = await _postRepo.DeleteCommentAsync(id, currentUserId.Value);
@@ -75,9 +75,9 @@ namespace TeamAceProject.Controllers
         [Authorize]
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditComment(Guid id, [FromForm] string body)
+        public async Task<IActionResult> EditComment(int id, [FromForm] string body)
         {
-            Guid? currentUserId = User.GetCurrentUserId();
+            int? currentUserId = User.GetCurrentUserId();
             if (!currentUserId.HasValue) return Unauthorized();
 
             if (string.IsNullOrWhiteSpace(body))

@@ -6,17 +6,18 @@ namespace TeamAceProject.Services.Interfaces
     public interface ITeamRepository
     {
         Task<List<TeamListItemViewModel>> GetAllTeamsAsync();
-        Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(Guid userId);
-        Task<TeamDetailsViewModel?> GetTeamByIdAsync(Guid teamId);
-        Task<Guid?> GetTeamOwnerIdAsync(Guid teamId);
-        Task<List<TeamOptionViewModel>> GetUserTeamOptionsAsync(Guid userId);
+        Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(int userId);
+        Task<TeamDetailsViewModel?> GetTeamByIdAsync(int teamId);
+        Task<int?> GetTeamOwnerIdAsync(int teamId);
+        Task<List<TeamOptionViewModel>> GetUserTeamOptionsAsync(int userId);
         Task<Team> CreateTeamAsync(Team team);
-        Task<bool> DeleteTeamAsync(Guid teamId);
-        Task<TeamMember?> GetTeamMemberByIdAsync(Guid teamMemberId);
+        Task<bool> RenameTeamAsync(int teamId, string newName);
+        Task<bool> DeleteTeamAsync(int teamId);
+        Task<TeamMember?> GetTeamMemberByIdAsync(int teamMemberId);
         Task<TeamMember> AddTeamMemberAsync(AddTeamMemberInputModel input);
         Task<TeamMember> EditTeamMemberAsync(EditTeamMemberInputModel input);
-        Task<bool> RemoveTeamMemberAsync(Guid teamMemberId);
+        Task<bool> RemoveTeamMemberAsync(int teamMemberId);
         Task<TeamMemberMove> AddTeamMemberMoveAsync(TeamMemberMove teamMemberMove);
-        Task<bool> RemoveTeamMemberMoveAsync(Guid teamMemberMoveId);
+        Task<bool> RemoveTeamMemberMoveAsync(int teamMemberMoveId);
     }
 }

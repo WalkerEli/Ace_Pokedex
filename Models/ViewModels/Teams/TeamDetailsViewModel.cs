@@ -2,14 +2,14 @@
 {
     public class TeamOptionViewModel
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
     }
 
     public class TeamDetailsViewModel
     {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public bool IsPublic { get; set; }
@@ -20,7 +20,7 @@
 
     public class TeamMemberViewModel
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public int SlotIndex { get; set; }
         public int PokemonId { get; set; }
         public string PokemonName { get; set; } = string.Empty;

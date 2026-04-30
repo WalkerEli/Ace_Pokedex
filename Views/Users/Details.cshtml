@@ -1,8 +1,9 @@
-@model TeamAceProject.Models.ViewModels.Users.UserDetailsViewModel
+﻿@model TeamAceProject.Models.ViewModels.Users.UserDetailsViewModel
 @using System.Security.Claims
+@using TeamAceProject.Infrastructure
 @{
     ViewData["Title"] = Model.Username;
-    Guid? currentUserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var _uid) ? _uid : (Guid?)null;
+    int? currentUserId = User.GetCurrentUserId();
     bool isOwner = currentUserId.HasValue && currentUserId.Value == Model.Id;
 }
 

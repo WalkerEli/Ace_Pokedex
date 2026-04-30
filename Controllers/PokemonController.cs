@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TeamAceProject.Models.ViewModels.Pokemon;
 using TeamAceProject.Services.Interfaces;
 
 namespace TeamAceProject.Controllers
@@ -15,8 +16,21 @@ namespace TeamAceProject.Controllers
 
         // Returns a paginated list of Pokemon
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 24)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 24, string? query = null)
         {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                var results = await _pokemonRepo.SearchPokemonAsync(query);
+                return View(new PokemonListPageViewModel
+                {
+                    Pokemon = results,
+                    Query = query,
+                    PageNumber = 1,
+                    PageSize = results.Count,
+                    TotalCount = results.Count
+                });
+            }
+
             var model = await _pokemonRepo.GetPokemonPageAsync(page, pageSize);
             return View(model);
         }

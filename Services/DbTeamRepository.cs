@@ -16,7 +16,7 @@ namespace TeamAceProject.Services
             _pokeApiRepo = PokeApiRepository;
         }
 
-        public async Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(Guid userId)
+        public async Task<List<TeamListItemViewModel>> GetTeamsByUserAsync(int userId)
         {
             return await _context.Teams.AsNoTracking()
                 .Where(team => team.UserId == userId)
@@ -53,7 +53,7 @@ namespace TeamAceProject.Services
                 .ToListAsync();
         }
 
-        public async Task<TeamDetailsViewModel?> GetTeamByIdAsync(Guid teamId)
+        public async Task<TeamDetailsViewModel?> GetTeamByIdAsync(int teamId)
         {
             Team? team = await _context.Teams.AsNoTracking()
                 .Include(team => team.User)
@@ -102,7 +102,7 @@ namespace TeamAceProject.Services
             return model;
         }
 
-        public async Task<List<TeamOptionViewModel>> GetUserTeamOptionsAsync(Guid userId)
+        public async Task<List<TeamOptionViewModel>> GetUserTeamOptionsAsync(int userId)
         {
             return await _context.Teams
                 .Where(t => t.UserId == userId)
@@ -111,17 +111,16 @@ namespace TeamAceProject.Services
                 .ToListAsync();
         }
 
-        public async Task<Guid?> GetTeamOwnerIdAsync(Guid teamId)
+        public async Task<int?> GetTeamOwnerIdAsync(int teamId)
         {
             return await _context.Teams
                 .Where(t => t.Id == teamId)
-                .Select(t => (Guid?)t.UserId)
+                .Select(t => (int?)t.UserId)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<Team> CreateTeamAsync(Team team)
         {
-            team.Id = Guid.NewGuid();
             team.CreatedAt = DateTime.UtcNow;
             team.UpdatedAt = DateTime.UtcNow;
             _context.Teams.Add(team);
@@ -129,7 +128,17 @@ namespace TeamAceProject.Services
             return team;
         }
 
-        public async Task<bool> DeleteTeamAsync(Guid teamId)
+        public async Task<bool> RenameTeamAsync(int teamId, string newName)
+        {
+            Team? team = await _context.Teams.FindAsync(teamId);
+            if (team == null) return false;
+            team.Name = newName.Trim();
+            team.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteTeamAsync(int teamId)
         {
             Team? team = await _context.Teams.FindAsync(teamId);
 
@@ -143,7 +152,7 @@ namespace TeamAceProject.Services
             return true;
         }
 
-        public async Task<TeamMember?> GetTeamMemberByIdAsync(Guid teamMemberId)
+        public async Task<TeamMember?> GetTeamMemberByIdAsync(int teamMemberId)
         {
             return await _context.TeamMembers
                 .Include(member => member.TeamMemberMoves)
@@ -186,7 +195,6 @@ namespace TeamAceProject.Services
 
             TeamMember teamMember = new TeamMember
             {
-                Id = Guid.NewGuid(),
                 TeamId = input.TeamId,
                 SlotIndex = nextSlot,
                 PokemonId = pokemon.Id,
@@ -217,7 +225,6 @@ namespace TeamAceProject.Services
 
                 teamMember.TeamMemberMoves.Add(new TeamMemberMove
                 {
-                    Id = Guid.NewGuid(),
                     TeamMemberId = teamMember.Id,
                     MoveSlot = moveSlot,
                     MoveName = normalizedMove,
@@ -283,7 +290,6 @@ namespace TeamAceProject.Services
 
                 _context.TeamMemberMoves.Add(new TeamMemberMove
                 {
-                    Id = Guid.NewGuid(),
                     TeamMemberId = member.Id,
                     MoveSlot = moveSlot,
                     MoveName = normalizedMove,
@@ -299,7 +305,7 @@ namespace TeamAceProject.Services
             return member;
         }
 
-        public async Task<bool> RemoveTeamMemberAsync(Guid teamMemberId)
+        public async Task<bool> RemoveTeamMemberAsync(int teamMemberId)
         {
             TeamMember? teamMember = await _context.TeamMembers.FindAsync(teamMemberId);
             if (teamMember == null)
@@ -321,14 +327,13 @@ namespace TeamAceProject.Services
 
         public async Task<TeamMemberMove> AddTeamMemberMoveAsync(TeamMemberMove teamMemberMove)
         {
-            teamMemberMove.Id = Guid.NewGuid();
             teamMemberMove.MoveName = NormalizeApiName(teamMemberMove.MoveName);
             _context.TeamMemberMoves.Add(teamMemberMove);
             await _context.SaveChangesAsync();
             return teamMemberMove;
         }
 
-        public async Task<bool> RemoveTeamMemberMoveAsync(Guid teamMemberMoveId)
+        public async Task<bool> RemoveTeamMemberMoveAsync(int teamMemberMoveId)
         {
             TeamMemberMove? move = await _context.TeamMemberMoves.FindAsync(teamMemberMoveId);
             if (move == null)
